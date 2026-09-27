@@ -1,6 +1,89 @@
 import { useState } from "react";
 import "./App.css";
 
+const COMMON_SKILLS = [
+  "javascript",
+  "typescript",
+  "java",
+  "python",
+  "c++",
+  "react",
+  "angular",
+  "vue",
+  "node.js",
+  "express",
+  "html",
+  "css",
+  "tailwind",
+  "sql",
+  "mysql",
+  "postgresql",
+  "mongodb",
+  "git",
+  "github",
+  "docker",
+  "kubernetes",
+  "aws",
+  "azure",
+  "machine learning",
+  "deep learning",
+  "tensorflow",
+  "pytorch",
+  "flask",
+  "django",
+  "rest api",
+  "api",
+  "data structures",
+  "algorithms"
+];
+function calculateJobMatch(jobDescription, studentSkills) {
+  const description = (jobDescription || "").toLowerCase();
+
+  const skills = studentSkills
+    .split(",")
+    .map((skill) => skill.trim().toLowerCase())
+    .filter((skill) => skill !== "");
+
+  // Skills mentioned in the job description
+  const requiredSkills = COMMON_SKILLS.filter((skill) => {
+  const escapedSkill = skill.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+
+  const pattern = new RegExp(
+    `\\b${escapedSkill}\\b`,
+    "i"
+  );
+
+  return pattern.test(description);
+});
+
+  // Skills the student has that are required by the job
+  const matchedSkills = requiredSkills.filter((skill) =>
+    skills.some((studentSkill) =>
+      studentSkill.includes(skill) || skill.includes(studentSkill)
+    )
+  );
+
+  // Skills required by the job but missing from student's profile
+  const missingSkills = requiredSkills.filter(
+    (skill) => !matchedSkills.includes(skill)
+  );
+
+  let matchPercentage = 0;
+
+  if (requiredSkills.length > 0) {
+    matchPercentage = Math.round(
+      (matchedSkills.length / requiredSkills.length) * 100
+    );
+  }
+
+  return {
+    requiredSkills,
+    matchedSkills,
+    missingSkills,
+    matchPercentage
+  };
+}
+
 function App() {
   const [jobs, setJobs] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -271,60 +354,112 @@ function App() {
             </div>
 
 
-            <div className="job-grid">
+           <div className="job-grid">
 
-              {jobs.map((job, index) => (
+  {jobs.map((job, index) => {
 
-                <div
-                  className="job-card"
-                  key={job.job_id || index}
+    const match = calculateJobMatch(
+      job.description,
+      profile.skills
+    );
+
+    return (
+      <div
+        className="job-card"
+        key={job.job_id || index}
+      >
+
+        <h3>
+          {job.title}
+        </h3>
+
+        <h4>
+          {job.company}
+        </h4>
+
+        <div className="match-score">
+          🎯 Match: {match.matchPercentage}%
+        </div>
+
+        <p className="location">
+          📍 {job.location}
+        </p>
+
+        {job.via && (
+          <p className="via">
+            Via {job.via}
+          </p>
+        )}
+
+        {match.matchedSkills.length > 0 && (
+          <div className="skills-section">
+
+            <strong>✅ Your matched skills</strong>
+
+            <div className="skill-tags">
+
+              {match.matchedSkills.map((skill) => (
+                <span
+                  className="skill-tag matched"
+                  key={skill}
                 >
-
-                  <h3>
-                    {job.title}
-                  </h3>
-
-                  <h4>
-                    {job.company}
-                  </h4>
-
-                  <p className="location">
-                    📍 {job.location}
-                  </p>
-
-                  {job.via && (
-                    <p className="via">
-                      Via {job.via}
-                    </p>
-                  )}
-
-                  <p className="description">
-                    {job.description
-                      ? job.description.substring(0, 250) + "..."
-                      : "No description available."}
-                  </p>
-
-
-                  <div className="job-footer">
-
-                    {job.source_link && (
-                      <a
-                        href={job.source_link}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        View Opportunity →
-                      </a>
-                    )}
-
-                  </div>
-
-                </div>
-
+                  {skill}
+                </span>
               ))}
 
             </div>
-          </>
+
+          </div>
+        )}
+
+        {match.missingSkills.length > 0 && (
+          <div className="skills-section">
+
+            <strong>⚠️ Skill gap</strong>
+
+            <div className="skill-tags">
+
+              {match.missingSkills.map((skill) => (
+                <span
+                  className="skill-tag missing"
+                  key={skill}
+                >
+                  {skill}
+                </span>
+              ))}
+
+            </div>
+
+          </div>
+        )}
+
+        <p className="description">
+          {job.description
+            ? job.description.substring(0, 250) + "..."
+            : "No description available."}
+        </p>
+
+        <div className="job-footer">
+
+          {job.source_link && (
+            <a
+              href={job.source_link}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              View Opportunity →
+            </a>
+          )}
+
+        </div>
+
+      </div>
+    );
+
+  })}
+
+</div>
+    </>
         )}
 
       </main>

@@ -337,3 +337,78 @@ body {
   }
 
 }
+
+
+
+/* Job Match */
+
+.match-score {
+  display: inline-block;
+
+  margin: 8px 0 15px;
+
+  padding: 7px 12px;
+
+  border-radius: 20px;
+
+  background: #eff6ff;
+
+  color: #2563eb;
+
+  font-weight: bold;
+
+  font-size: 14px;
+}
+
+
+.skills-section {
+  margin-top: 15px;
+}
+
+
+.skills-section strong {
+  display: block;
+
+  margin-bottom: 8px;
+
+  font-size: 14px;
+}
+
+
+.skill-tags {
+  display: flex;
+
+  flex-wrap: wrap;
+
+  gap: 6px;
+}
+
+.skill-tag {
+  display: inline-block;
+
+  padding: 6px 10px;
+
+  border-radius: 15px;
+
+  font-size: 12px;
+
+  font-weight: bold;
+
+  margin-right: 4px;
+
+  margin-bottom: 4px;
+}
+
+
+.skill-tag.matched {
+  background: #dcfce7;
+
+  color: #166534;
+}
+
+
+.skill-tag.missing {
+  background: #fef3c7;
+
+  color: #92400e;
+}
