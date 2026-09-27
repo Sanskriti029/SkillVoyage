@@ -1,5 +1,6 @@
 import { useState } from "react";
 import "./App.css";
+import skillRoadmaps from "./data/skillRoadmaps";
 
 const COMMON_SKILLS = [
   "javascript",
@@ -413,25 +414,73 @@ function App() {
         )}
 
         {match.missingSkills.length > 0 && (
-          <div className="skills-section">
+  <div className="skills-section">
 
-            <strong>⚠️ Skill gap</strong>
+    <strong>⚠️ Skill gap</strong>
 
-            <div className="skill-tags">
+    <div className="skill-tags">
 
-              {match.missingSkills.map((skill) => (
-                <span
-                  className="skill-tag missing"
-                  key={skill}
-                >
-                  {skill}
-                </span>
+      {match.missingSkills.map((skill) => (
+        <span
+          className="skill-tag missing"
+          key={skill}
+        >
+          {skill}
+        </span>
+      ))}
+
+    </div>
+
+
+    <div className="roadmap-section">
+
+      <strong>📚 How to close your skill gap</strong>
+
+      {match.missingSkills.map((skill) => {
+
+        const roadmap = skillRoadmaps[skill];
+
+        if (!roadmap) {
+          return null;
+        }
+
+        return (
+          <div
+            className="roadmap-card"
+            key={skill}
+          >
+
+            <h5>
+              {roadmap.title}
+            </h5>
+
+
+            <p className="roadmap-label">
+              Learn:
+            </p>
+
+            <ul>
+              {roadmap.learn.map((item, index) => (
+                <li key={index}>
+                  {item}
+                </li>
               ))}
+            </ul>
 
-            </div>
+
+            <p className="roadmap-practice">
+              💻 Practice: {roadmap.practice}
+            </p>
 
           </div>
-        )}
+        );
+      })}
+
+    </div>
+
+  </div>
+)}
+        
 
         <p className="description">
           {job.description
