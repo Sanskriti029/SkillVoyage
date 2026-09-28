@@ -91,6 +91,7 @@ function App() {
   const [query, setQuery] = useState("software engineer intern");
   const [location, setLocation] = useState("Bangalore, India");
   const [searched, setSearched] = useState(false);
+  const [internshipsOnly, setInternshipsOnly] = useState(true);
 
   // Student profile
   const [profile, setProfile] = useState({
@@ -311,6 +312,14 @@ function App() {
               onChange={(e) => setLocation(e.target.value)}
               placeholder="Bangalore, India"
             />
+            <label className="internship-filter">
+  <input
+    type="checkbox"
+    checked={internshipsOnly}
+    onChange={(e) => setInternshipsOnly(e.target.checked)}
+  />
+  Internships only
+</label>
           </div>
 
 
@@ -357,7 +366,10 @@ function App() {
 
            <div className="job-grid">
 
-  {jobs.map((job, index) => {
+  
+    {jobs
+  .filter((job) => !internshipsOnly || job.is_internship)
+  .map((job, index) => {
 
     const match = calculateJobMatch(
       job.description,
