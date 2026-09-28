@@ -359,7 +359,20 @@ body {
 
   font-size: 14px;
 }
+.match-score.high {
+  background: #dcfce7;
+  color: #166534;
+}
 
+.match-score.medium {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.match-score.low {
+  background: #fee2e2;
+  color: #991b1b;
+}
 
 .skills-section {
   margin-top: 15px;

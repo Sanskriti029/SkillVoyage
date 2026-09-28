@@ -394,7 +394,15 @@ function App() {
     🎓 Internship
   </span>
 )}
-        <div className="match-score">
+       <div
+  className={`match-score ${
+    match.matchPercentage >= 70
+      ? "high"
+      : match.matchPercentage >= 40
+      ? "medium"
+      : "low"
+  }`}
+>
   🎯 Skill Match: {match.matchPercentage}%
 </div>
 
