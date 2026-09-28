@@ -88,7 +88,7 @@ function calculateJobMatch(jobDescription, studentSkills) {
 function App() {
   const [jobs, setJobs] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [query, setQuery] = useState("software engineer");
+  const [query, setQuery] = useState("software engineer intern");
   const [location, setLocation] = useState("Bangalore, India");
   const [searched, setSearched] = useState(false);
 
@@ -377,7 +377,11 @@ function App() {
         <h4>
           {job.company}
         </h4>
-
+        {job.is_internship && (
+  <span className="internship-badge">
+    🎓 Internship
+  </span>
+)}
         <div className="match-score">
           🎯 Match: {match.matchPercentage}%
         </div>

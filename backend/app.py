@@ -23,8 +23,25 @@ if not api_key:
 
 # Create SerpApi client
 client = serpapi.Client(api_key=api_key)
+INTERNSHIP_KEYWORDS = [
+    "intern",
+    "internship",
+    "summer intern",
+    "winter intern",
+    "sde intern",
+    "software engineer intern",
+    "software developer intern",
+    "technology intern",
+    "engineering intern"
+]
 
+def is_internship(title):
+    title = (title or "").lower()
 
+    return any(
+        keyword in title
+        for keyword in INTERNSHIP_KEYWORDS
+    )
 # -------------------------
 # HOME ROUTE
 # -------------------------
@@ -72,6 +89,7 @@ def get_jobs():
             cleaned_jobs.append({
                 "title": job.get("title"),
                 "company": job.get("company_name"),
+                "is_internship": is_internship(job.get("title")),
                 "location": job.get("location"),
                 "description": job.get("description"),
                 "job_id": job.get("job_id"),
