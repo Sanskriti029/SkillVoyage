@@ -395,8 +395,12 @@ function App() {
   </span>
 )}
         <div className="match-score">
-          🎯 Match: {match.matchPercentage}%
-        </div>
+  🎯 Skill Match: {match.matchPercentage}%
+</div>
+
+<p className="match-explanation">
+  Based on the skills detected in this job description and the skills in your profile.
+</p>
 
         <p className="location">
           📍 {job.location}
