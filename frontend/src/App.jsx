@@ -92,6 +92,13 @@ function App() {
   const [location, setLocation] = useState("Bangalore, India");
   const [searched, setSearched] = useState(false);
   const [internshipsOnly, setInternshipsOnly] = useState(true);
+  const filteredJobs = internshipsOnly
+  ? jobs.filter((job) => job.is_internship)
+  : jobs;
+
+  const [nextPageToken, setNextPageToken] = useState(null);
+  const [loadingMore, setLoadingMore] = useState(false);
+
 
   // Student profile
   const [profile, setProfile] = useState({
@@ -126,6 +133,7 @@ function App() {
 
       if (data.success) {
         setJobs(data.jobs);
+        setNextPageToken(data.next_page_token || null);
       } else {
         console.error(data.error);
         setJobs([]);
@@ -137,6 +145,44 @@ function App() {
 
     setLoading(false);
   };
+
+  const loadMoreJobs = async () => {
+  if (!nextPageToken || loadingMore) return;
+
+  setLoadingMore(true);
+
+  try {
+    const url =
+      `http://127.0.0.1:5000/api/jobs?q=${encodeURIComponent(query)}` +
+      `&location=${encodeURIComponent(location)}` +
+      `&next_page_token=${encodeURIComponent(nextPageToken)}`;
+
+    const response = await fetch(url);
+    const data = await response.json();
+
+    if (!response.ok || !data.success) {
+      throw new Error(data.error || "Unable to load more jobs.");
+    }
+
+    setJobs((previousJobs) => {
+      const existingIds = new Set(
+        previousJobs.map((job) => job.job_id).filter(Boolean)
+      );
+
+      const newJobs = data.jobs.filter(
+        (job) => !job.job_id || !existingIds.has(job.job_id)
+      );
+
+      return [...previousJobs, ...newJobs];
+    });
+
+    setNextPageToken(data.next_page_token || null);
+  } catch (error) {
+    console.error("Load more jobs failed:", error);
+  } finally {
+    setLoadingMore(false);
+  }
+};
 
   return (
     <div className="app">
@@ -341,35 +387,26 @@ function App() {
           </div>
         )}
 
-
-        {!loading && searched && jobs.length === 0 && (
-          <div className="message">
-            No jobs found. Try another role or location.
-          </div>
-        )}
-
+{!loading && searched && filteredJobs.length === 0 && (
+  <div className="message">
+    No opportunities found for this filter. Try another role or location.
+  </div>
+)}
 
         {!loading && jobs.length > 0 && (
           <>
-            <div className="results-header">
-
-              <h2>
-                Live Opportunities
-              </h2>
-
-              <span>
-                {jobs.length} jobs found
-              </span>
-
-            </div>
+           <div className="results-header">
+  <h2>Live Opportunities</h2>
+  <span>
+    {filteredJobs.length} opportunities shown
+  </span>
+</div>
 
 
            <div className="job-grid">
 
   
-    {jobs
-  .filter((job) => !internshipsOnly || job.is_internship)
-  .map((job, index) => {
+   {filteredJobs.map((job, index) => {
 
     const match = calculateJobMatch(
       job.description,
@@ -528,12 +565,24 @@ function App() {
     </a>
   )}
 </div>
+
       </div>
     );
 
   })}
 
 </div>
+{nextPageToken && (
+  <div className="load-more-container">
+    <button
+      className="load-more-button"
+      onClick={loadMoreJobs}
+      disabled={loadingMore}
+    >
+      {loadingMore ? "Loading..." : "Load More Jobs"}
+    </button>
+  </div>
+)}
     </>
         )}
 

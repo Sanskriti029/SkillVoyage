@@ -72,13 +72,21 @@ def get_jobs():
 
     try:
 
-        results = client.search({
+        search_params = {
             "engine": "google_jobs",
             "q": query,
             "location": location,
             "gl": "in",
             "hl": "en"
-        })
+        }
+
+        # Request the next page only when a token is supplied
+        next_page_token = request.args.get("next_page_token")
+
+        if next_page_token:
+            search_params["next_page_token"] = next_page_token
+
+        results = client.search(search_params)
 
         jobs = results.get("jobs_results", [])
 
@@ -102,7 +110,10 @@ def get_jobs():
         return jsonify({
             "success": True,
             "count": len(cleaned_jobs),
-            "jobs": cleaned_jobs
+            "jobs": cleaned_jobs,
+            "next_page_token": results.get(
+                "serpapi_pagination", {}
+            ).get("next_page_token")
         })
 
     except Exception as e:
