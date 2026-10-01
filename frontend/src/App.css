@@ -521,3 +521,21 @@ body {
 
   font-weight: bold;
 }
+
+
+.apply-button {
+  display: inline-block;
+  padding: 10px 16px;
+  border-radius: 8px;
+  background: #2563eb;
+  color: white;
+  text-decoration: none;
+  font-weight: bold;
+  font-size: 14px;
+  transition: 0.2s ease;
+}
+
+.apply-button:hover {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}

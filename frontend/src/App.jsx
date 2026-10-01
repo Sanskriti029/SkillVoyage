@@ -517,19 +517,17 @@ function App() {
         </p>
 
         <div className="job-footer">
-
-          {job.source_link && (
-            <a
-              href={job.source_link}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              View Opportunity →
-            </a>
-          )}
-
-        </div>
-
+  {job.source_link && (
+    <a
+      className="apply-button"
+      href={job.source_link}
+      target="_blank"
+      rel="noopener noreferrer"
+    >
+      Apply / View Opportunity →
+    </a>
+  )}
+</div>
       </div>
     );
 
