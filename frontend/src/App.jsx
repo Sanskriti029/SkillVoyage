@@ -77,6 +77,9 @@ function calculateJobMatch(jobDescription, studentSkills) {
     );
   }
 
+
+
+
   return {
     requiredSkills,
     matchedSkills,
@@ -92,13 +95,12 @@ function App() {
   const [location, setLocation] = useState("Bangalore, India");
   const [searched, setSearched] = useState(false);
   const [internshipsOnly, setInternshipsOnly] = useState(true);
-  const filteredJobs = internshipsOnly
-  ? jobs.filter((job) => job.is_internship)
-  : jobs;
+
 
   const [nextPageToken, setNextPageToken] = useState(null);
   const [loadingMore, setLoadingMore] = useState(false);
-
+const [companyFilter, setCompanyFilter] = useState("");
+const [jobLocationFilter, setJobLocationFilter] = useState("");
 
   // Student profile
   const [profile, setProfile] = useState({
@@ -117,6 +119,42 @@ function App() {
       [field]: value
     });
   };
+const filteredJobs = jobs
+  .filter((job) => !internshipsOnly || job.is_internship)
+  .filter((job) =>
+    (job.company || "")
+      .toLowerCase()
+      .includes(companyFilter.trim().toLowerCase())
+  )
+  .filter((job) =>
+    (job.location || "")
+      .toLowerCase()
+      .includes(jobLocationFilter.trim().toLowerCase())
+  );
+  const allCompanies = [
+  ...new Set(
+    jobs
+      .map((job) => job.company?.trim())
+      .filter(Boolean)
+  ),
+].sort((a, b) => a.localeCompare(b));
+
+const companySuggestions = allCompanies
+  .filter((company) =>
+    company.toLowerCase().includes(companyFilter.trim().toLowerCase())
+  )
+  .filter(
+    (company) =>
+      company.toLowerCase() !== companyFilter.trim().toLowerCase()
+  )
+  .slice(0, 6);
+
+const fallbackCompanies = allCompanies
+  .filter(
+    (company) => !companySuggestions.includes(company)
+  )
+  .slice(0, 5);
+
 
   const searchJobs = async () => {
     setLoading(true);
@@ -151,6 +189,9 @@ function App() {
 
   setLoadingMore(true);
 
+
+
+  
   try {
     const url =
       `http://127.0.0.1:5000/api/jobs?q=${encodeURIComponent(query)}` +
@@ -393,7 +434,7 @@ function App() {
   </div>
 )}
 
-        {!loading && jobs.length > 0 && (
+        {!loading && filteredJobs.length > 0 && (
           <>
            <div className="results-header">
   <h2>Live Opportunities</h2>
@@ -401,7 +442,61 @@ function App() {
     {filteredJobs.length} opportunities shown
   </span>
 </div>
+<div className="company-filter-wrapper">
+  <div className="company-input-row">
+    <input
+      type="text"
+      className="filter-input"
+      placeholder="Search company name..."
+      value={companyFilter}
+      onChange={(e) => setCompanyFilter(e.target.value)}
+      aria-label="Filter jobs by company"
+      autoComplete="off"
+    />
 
+    {companyFilter && (
+      <button
+        type="button"
+        className="clear-company-button"
+        onClick={() => setCompanyFilter("")}
+        aria-label="Clear company filter"
+      >
+        ✕
+      </button>
+    )}
+  </div>
+
+  {companyFilter.trim() &&
+  companySuggestions.length === 0 &&
+  allCompanies.length > 0 && (
+    <div className="company-suggestions">
+      <div className="company-no-suggestions">
+        No matching company found. Try one of these:
+      </div>
+
+      {fallbackCompanies.map((company) => (
+        <button
+          type="button"
+          className="company-suggestion"
+          key={company}
+          onClick={() => setCompanyFilter(company)}
+        >
+          <span>{company}</span>
+          <span className="suggestion-label">Use this</span>
+        </button>
+      ))}
+
+      <button
+        type="button"
+        className="company-suggestion"
+        onClick={() => setCompanyFilter("")}
+      >
+        <span>Clear company search</span>
+        <span className="suggestion-label">Reset</span>
+      </button>
+    </div>
+)}
+</div>
 
            <div className="job-grid">
 
