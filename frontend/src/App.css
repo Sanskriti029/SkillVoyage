@@ -749,3 +749,301 @@ body {
 .company-reset-main-button:hover {
   background: #1d4ed8;
 }
+
+
+
+/* Match summary */
+.match-summary {
+  margin-top: 16px;
+  padding: 16px;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  background: #f9fafb;
+}
+
+.match-score {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.match-percentage {
+  font-size: 28px;
+  font-weight: 800;
+  color: #2563eb;
+}
+
+.match-label {
+  font-size: 14px;
+  font-weight: 600;
+  color: #6b7280;
+}
+
+.match-explanation {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.skill-section h4 {
+  margin: 0 0 8px;
+  font-size: 14px;
+  color: #374151;
+}
+
+.skill-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+}
+
+.skill-tag {
+  display: inline-block;
+  padding: 5px 9px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.skill-tag.matched {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.skill-tag.missing {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.no-skill-data {
+  margin: 0;
+  font-size: 13px;
+  color: #6b7280;
+}
+
+
+/* Skill roadmap */
+.roadmap-section {
+  margin-top: 18px;
+}
+
+.roadmap-heading {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 12px;
+}
+
+.roadmap-heading strong {
+  font-size: 16px;
+  color: #111827;
+}
+
+.roadmap-heading span {
+  font-size: 13px;
+  color: #6b7280;
+}
+
+.roadmap-card {
+  margin-top: 12px;
+  padding: 16px;
+  border: 1px solid #dbeafe;
+  border-radius: 12px;
+  background: #f8fbff;
+}
+
+.roadmap-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.roadmap-card-header h5 {
+  margin: 0;
+  font-size: 15px;
+  color: #1f2937;
+}
+
+.roadmap-badge {
+  flex-shrink: 0;
+  padding: 4px 8px;
+  border-radius: 999px;
+  background: #fee2e2;
+  color: #991b1b;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.roadmap-label {
+  margin: 8px 0;
+  font-size: 13px;
+  font-weight: 700;
+  color: #374151;
+}
+
+.roadmap-list {
+  margin: 0;
+  padding-left: 22px;
+}
+
+.roadmap-list li {
+  margin-bottom: 6px;
+  font-size: 13px;
+  color: #4b5563;
+}
+
+.roadmap-practice-box {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-top: 14px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  background: #eef2ff;
+}
+
+.roadmap-practice-box strong {
+  font-size: 13px;
+  color: #3730a3;
+}
+
+.roadmap-practice-box span {
+  font-size: 13px;
+  color: #4b5563;
+}
+
+
+
+/* Job-specific preparation plan */
+
+.preparation-summary {
+  margin: 14px 0 18px;
+  padding: 18px;
+  border: 1px solid #c7d2fe;
+  border-radius: 14px;
+  background: #f5f7ff;
+}
+
+.preparation-summary-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.preparation-summary-header h4 {
+  margin: 0 0 5px;
+  font-size: 16px;
+  color: #1f2937;
+}
+
+.preparation-summary-header p {
+  margin: 0;
+  font-size: 13px;
+  color: #6b7280;
+  line-height: 1.5;
+}
+
+.preparation-count {
+  min-width: 55px;
+  height: 55px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  background: #e0e7ff;
+  color: #3730a3;
+  font-size: 20px;
+  font-weight: 800;
+}
+
+.preparation-count span {
+  font-size: 10px;
+  font-weight: 600;
+}
+
+.preparation-priority-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.preparation-priority {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  border-radius: 9px;
+  background: white;
+  border: 1px solid #e5e7eb;
+}
+
+.priority-number {
+  width: 28px;
+  height: 28px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: #4f46e5;
+  color: white;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.priority-content {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+
+.priority-content strong {
+  font-size: 14px;
+  color: #1f2937;
+}
+
+.priority-content span {
+  font-size: 12px;
+  color: #6b7280;
+  overflow-wrap: anywhere;
+}
+
+.preparation-next-step {
+  margin-top: 14px;
+  padding: 11px 12px;
+  border-radius: 8px;
+  background: #eef2ff;
+  color: #4338ca;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+
+@media (max-width: 600px) {
+
+  .preparation-summary-header {
+    align-items: flex-start;
+  }
+
+  .preparation-count {
+    min-width: 48px;
+    height: 48px;
+    font-size: 17px;
+  }
+
+  .preparation-priority {
+    align-items: flex-start;
+  }
+
+  .priority-number {
+    margin-top: 1px;
+  }
+
+}

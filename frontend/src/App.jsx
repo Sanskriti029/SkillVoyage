@@ -594,23 +594,64 @@ const sortedJobs = [...filteredJobs].sort((a, b) => {
     🎓 Internship
   </span>
 )}
-       <div
-  className={`match-score ${
-    match.matchPercentage >= 70
-      ? "high"
-      : match.matchPercentage >= 40
-      ? "medium"
-      : "low"
-  }`}
->
-  🎯 Skill Match: {match.matchPercentage}%
+      <div className="match-summary">
+  <div className="match-score">
+    <span className="match-percentage">
+      {match.matchPercentage}%
+    </span>
+    <span className="match-label">
+      Skill Match
+    </span>
+  </div>
+
+  <div className="match-explanation">
+    {match.matchedSkills.length > 0 && (
+      <div className="skill-section">
+        <h4>✅ Skills you have</h4>
+
+        <div className="skill-tags">
+          {match.matchedSkills.map((skill) => (
+            <span
+              className="skill-tag matched"
+              key={skill}
+            >
+              {skill}
+            </span>
+          ))}
+        </div>
+      </div>
+    )}
+
+    {match.missingSkills.length > 0 && (
+      <div className="skill-section">
+        <h4>❌ Skills to improve</h4>
+
+        <div className="skill-tags">
+          {match.missingSkills.map((skill) => (
+            <span
+              className="skill-tag missing"
+              key={skill}
+            >
+              {skill}
+            </span>
+          ))}
+        </div>
+      </div>
+    )}
+
+    {match.matchedSkills.length === 0 &&
+      match.missingSkills.length === 0 && (
+        <p className="no-skill-data">
+          Not enough skill information available for this job.
+        </p>
+    )}
+  </div>
 </div>
-
-<p className="match-explanation">
+{/* <p className="match-explanation">
   Based on the skills detected in this job description and the skills in your profile.
-</p>
+</p> */}
 
-        <p className="location">
+        {/* <p className="location">
           📍 {job.location}
         </p>
 
@@ -618,9 +659,9 @@ const sortedJobs = [...filteredJobs].sort((a, b) => {
           <p className="via">
             Via {job.via}
           </p>
-        )}
+        )} */}
 
-        {match.matchedSkills.length > 0 && (
+        {/* {match.matchedSkills.length > 0 && (
           <div className="skills-section">
 
             <strong>✅ Your matched skills</strong>
@@ -639,32 +680,58 @@ const sortedJobs = [...filteredJobs].sort((a, b) => {
             </div>
 
           </div>
-        )}
+        )} */}
 
         {match.missingSkills.length > 0 && (
-  <div className="skills-section">
+  // <div className="skills-section">
 
-    <strong>⚠️ Skill gap</strong>
+  //   <strong>⚠️ Skill gap</strong>
 
-    <div className="skill-tags">
+  //   <div className="skill-tags">
 
-      {match.missingSkills.map((skill) => (
-        <span
-          className="skill-tag missing"
-          key={skill}
-        >
-          {skill}
-        </span>
-      ))}
+  //     {match.missingSkills.map((skill) => (
+  //       <span
+  //         className="skill-tag missing"
+  //         key={skill}
+  //       >
+  //         {skill}
+  //       </span>
+  //     ))}
 
+  //   </div>
+
+<div className="roadmap-section">
+
+  <div className="roadmap-heading">
+    <strong>📚 Your Preparation Plan</strong>
+    <span>
+      Build these missing skills to improve your match for this job.
+    </span>
+  </div>
+
+  {/* Overall preparation summary */}
+  <div className="preparation-summary">
+
+    <div className="preparation-summary-header">
+      <div>
+        <h4>🎯 Job-Specific Skill Plan</h4>
+        <p>
+          You are currently missing{" "}
+          <strong>{match.missingSkills.length}</strong>{" "}
+          skill{match.missingSkills.length !== 1 ? "s" : ""} detected
+          from this job description.
+        </p>
+      </div>
+
+      <div className="preparation-count">
+        {match.missingSkills.length}
+        <span>skills</span>
+      </div>
     </div>
 
+    <div className="preparation-priority-list">
 
-    <div className="roadmap-section">
-
-      <strong>📚 How to close your skill gap</strong>
-
-      {match.missingSkills.map((skill) => {
+      {match.missingSkills.map((skill, index) => {
 
         const roadmap = skillRoadmaps[skill];
 
@@ -674,31 +741,25 @@ const sortedJobs = [...filteredJobs].sort((a, b) => {
 
         return (
           <div
-            className="roadmap-card"
+            className="preparation-priority"
             key={skill}
           >
 
-            <h5>
-              {roadmap.title}
-            </h5>
+            <div className="priority-number">
+              {index + 1}
+            </div>
 
+            <div className="priority-content">
 
-            <p className="roadmap-label">
-              Learn:
-            </p>
+              <strong>
+                {roadmap.title}
+              </strong>
 
-            <ul>
-              {roadmap.learn.map((item, index) => (
-                <li key={index}>
-                  {item}
-                </li>
-              ))}
-            </ul>
+              <span>
+                {roadmap.learn.slice(0, 3).join(" → ")}
+              </span>
 
-
-            <p className="roadmap-practice">
-              💻 Practice: {roadmap.practice}
-            </p>
+            </div>
 
           </div>
         );
@@ -706,7 +767,69 @@ const sortedJobs = [...filteredJobs].sort((a, b) => {
 
     </div>
 
+    {match.missingSkills.length > 0 && (
+      <div className="preparation-next-step">
+        💡 <strong>Recommended next step:</strong>{" "}
+        Start with{" "}
+        {skillRoadmaps[match.missingSkills[0]]?.title ||
+          match.missingSkills[0]}
+        .
+      </div>
+    )}
+
   </div>
+
+  {/* Detailed roadmap for each missing skill */}
+  {match.missingSkills.map((skill) => {
+
+    const roadmap = skillRoadmaps[skill];
+
+    if (!roadmap) {
+      return null;
+    }
+
+    return (
+      <div
+        className="roadmap-card"
+        key={skill}
+      >
+
+        <div className="roadmap-card-header">
+
+          <h5>
+            🎯 {roadmap.title}
+          </h5>
+
+          <span className="roadmap-badge">
+            Skill Gap
+          </span>
+
+        </div>
+
+        <p className="roadmap-label">
+          📖 Learn these topics
+        </p>
+
+        <ol className="roadmap-list">
+          {roadmap.learn.map((item, index) => (
+            <li key={index}>
+              {item}
+            </li>
+          ))}
+        </ol>
+
+        <div className="roadmap-practice-box">
+          <strong>💻 Practice:</strong>
+          <span>{roadmap.practice}</span>
+        </div>
+
+      </div>
+    );
+  })}
+
+</div>
+
+  // </div>
 )}
         
 
