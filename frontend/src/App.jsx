@@ -427,7 +427,10 @@ const sortedJobs = [...filteredJobs].sort((a, b) => {
               onChange={(e) => setLocation(e.target.value)}
               placeholder="Bangalore, India"
             />
-            <label className="internship-filter">
+            
+          </div>
+
+<label className="internship-filter">
   <input
     type="checkbox"
     checked={internshipsOnly}
@@ -435,9 +438,6 @@ const sortedJobs = [...filteredJobs].sort((a, b) => {
   />
   Internships only
 </label>
-          </div>
-
-
           <button onClick={searchJobs}>
             Search Internships
           </button>
@@ -458,11 +458,23 @@ const sortedJobs = [...filteredJobs].sort((a, b) => {
 
 {!loading && searched && filteredJobs.length === 0 && (
   <div className="message">
-    No opportunities found for this filter. Try another role or location.
-  </div>
+  <p>
+    No jobs match your current filters.
+  </p>
+
+  {companyFilter && (
+    <button
+      type="button"
+      className="company-reset-main-button"
+      onClick={() => setCompanyFilter("")}
+    >
+      ← Clear company filter
+    </button>
+  )}
+</div>
 )}
 
-        {!loading && filteredJobs.length > 0 && (
+        {!loading && jobs.length > 0 && (
           <>
            <div className="results-header">
   <h2>Live Opportunities</h2>
@@ -513,34 +525,43 @@ const sortedJobs = [...filteredJobs].sort((a, b) => {
     )}
   </div>
 
-  {companyFilter.trim() &&
+ {companyFilter.trim() &&
   companySuggestions.length === 0 &&
   allCompanies.length > 0 && (
     <div className="company-suggestions">
       <div className="company-no-suggestions">
-        No matching company found. Try one of these:
+        ❌ No matching company found for "{companyFilter}"
       </div>
-
-      {fallbackCompanies.map((company) => (
-        <button
-          type="button"
-          className="company-suggestion"
-          key={company}
-          onClick={() => setCompanyFilter(company)}
-        >
-          <span>{company}</span>
-          <span className="suggestion-label">Use this</span>
-        </button>
-      ))}
 
       <button
         type="button"
-        className="company-suggestion"
+        className="company-reset-button"
         onClick={() => setCompanyFilter("")}
       >
-        <span>Clear company search</span>
-        <span className="suggestion-label">Reset</span>
+        ← Show all companies
       </button>
+
+      {fallbackCompanies.length > 0 && (
+        <>
+          <div className="company-no-suggestions">
+            Or choose a company:
+          </div>
+
+          {fallbackCompanies.map((company) => (
+            <button
+              type="button"
+              className="company-suggestion"
+              key={company}
+              onClick={() => setCompanyFilter(company)}
+            >
+              <span>{company}</span>
+              <span className="suggestion-label">
+                Use this
+              </span>
+            </button>
+          ))}
+        </>
+      )}
     </div>
 )}
 </div>
