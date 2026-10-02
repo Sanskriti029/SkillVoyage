@@ -102,6 +102,10 @@ function App() {
 const [companyFilter, setCompanyFilter] = useState("");
 const [jobLocationFilter, setJobLocationFilter] = useState("");
 
+
+const [sortBy, setSortBy] = useState("match");
+
+
   // Student profile
   const [profile, setProfile] = useState({
     name: "",
@@ -225,6 +229,30 @@ const fallbackCompanies = allCompanies
   }
 };
 
+
+
+// Sorting by skills highest to lowest match percentage or by company name
+const sortedJobs = [...filteredJobs].sort((a, b) => {
+  if (sortBy === "company") {
+    return (a.company || "").localeCompare(
+      b.company || "",
+      undefined,
+      { sensitivity: "base" }
+    );
+  }
+
+  const matchA = calculateJobMatch(
+    a.description,
+    profile.skills
+  ).matchPercentage;
+
+  const matchB = calculateJobMatch(
+    b.description,
+    profile.skills
+  ).matchPercentage;
+
+  return matchB - matchA;
+});
   return (
     <div className="app">
 
@@ -442,6 +470,25 @@ const fallbackCompanies = allCompanies
     {filteredJobs.length} opportunities shown
   </span>
 </div>
+
+
+
+<div className="job-sort-control">
+  <label htmlFor="job-sort">Sort jobs by:</label>
+
+  <select
+    id="job-sort"
+    value={sortBy}
+    onChange={(e) => setSortBy(e.target.value)}
+    className="job-sort-select"
+  >
+    <option value="match">Highest Skill Match</option>
+    <option value="company">Company Name (A–Z)</option>
+  </select>
+</div>
+
+
+
 <div className="company-filter-wrapper">
   <div className="company-input-row">
     <input
@@ -501,7 +548,7 @@ const fallbackCompanies = allCompanies
            <div className="job-grid">
 
   
-   {filteredJobs.map((job, index) => {
+   {sortedJobs.map((job, index) => {
 
     const match = calculateJobMatch(
       job.description,
