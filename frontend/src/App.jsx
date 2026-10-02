@@ -647,6 +647,47 @@ const sortedJobs = [...filteredJobs].sort((a, b) => {
     )}
   </div>
 </div>
+
+{/* Why you match */}
+<div className="why-match-section">
+  <div className="why-match-heading">
+    <strong>💡 Why you match this job</strong>
+    <span>
+      Based on the skills detected in this job description.
+    </span>
+  </div>
+
+  {match.matchedSkills.length > 0 ? (
+    <div className="why-match-content">
+      <p>
+        Your profile matches this job because you already have{" "}
+        <strong>{match.matchedSkills.length}</strong>{" "}
+        relevant skill{match.matchedSkills.length !== 1 ? "s" : ""}.
+      </p>
+
+      <div className="why-match-skills">
+        {match.matchedSkills.map((skill) => (
+          <span className="why-match-skill" key={skill}>
+            ✓ {skill}
+          </span>
+        ))}
+      </div>
+
+      {match.missingSkills.length > 0 && (
+        <p className="why-match-gap">
+          You can improve your fit further by working on{" "}
+          <strong>{match.missingSkills.length}</strong>{" "}
+          missing skill{match.missingSkills.length !== 1 ? "s" : ""}.
+        </p>
+      )}
+    </div>
+  ) : (
+    <div className="why-match-empty">
+      No specific skill overlap was detected from the available job
+      description.
+    </div>
+  )}
+</div>
 {/* <p className="match-explanation">
   Based on the skills detected in this job description and the skills in your profile.
 </p> */}

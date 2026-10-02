@@ -1047,3 +1047,67 @@ body {
   }
 
 }
+
+/* Why you match section */
+
+.why-match-section {
+  margin-top: 18px;
+  padding: 16px;
+  border: 1px solid #dbeafe;
+  border-radius: 12px;
+  background: #f8fbff;
+}
+
+.why-match-heading {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 12px;
+}
+
+.why-match-heading strong {
+  font-size: 15px;
+  color: #1f2937;
+}
+
+.why-match-heading span {
+  font-size: 12px;
+  color: #6b7280;
+}
+
+.why-match-content p {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.5;
+  color: #4b5563;
+}
+
+.why-match-skills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin-top: 12px;
+}
+
+.why-match-skill {
+  padding: 6px 9px;
+  border-radius: 999px;
+  background: #dcfce7;
+  border: 1px solid #bbf7d0;
+  color: #166534;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.why-match-gap {
+  margin-top: 12px !important;
+}
+
+.why-match-empty {
+  padding: 10px 12px;
+  border-radius: 8px;
+  background: #f3f4f6;
+  color: #6b7280;
+  font-size: 13px;
+  line-height: 1.5;
+}
