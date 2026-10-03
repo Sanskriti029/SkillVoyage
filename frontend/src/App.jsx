@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "./App.css";
 import skillRoadmaps from "./data/skillRoadmaps";
 
@@ -116,16 +116,42 @@ const [savedJobs, setSavedJobs] = useState(() => {
     return [];
   }
 });
+
+
   // Student profile
-  const [profile, setProfile] = useState({
-    name: "",
-    degree: "",
-    branch: "",
-    year: "",
-    skills: "",
-    preferredRole: "",
-    preferredLocation: ""
-  });
+  const [profile, setProfile] = useState(() => {
+  try {
+    const savedProfile = localStorage.getItem("internscout_profile");
+
+    return savedProfile
+      ? JSON.parse(savedProfile)
+      : {
+          name: "",
+          degree: "",
+          branch: "",
+          year: "",
+          skills: "",
+          preferredRole: "",
+          preferredLocation: "",
+        };
+  } catch {
+    return {
+      name: "",
+      degree: "",
+      branch: "",
+      year: "",
+      skills: "",
+      preferredRole: "",
+      preferredLocation: "",
+    };
+  }
+});
+useEffect(() => {
+  localStorage.setItem(
+    "internscout_profile",
+    JSON.stringify(profile)
+  );
+}, [profile]);
 
   const updateProfile = (field, value) => {
     setProfile({
