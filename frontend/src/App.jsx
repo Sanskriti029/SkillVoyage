@@ -106,6 +106,16 @@ const [jobLocationFilter, setJobLocationFilter] = useState("");
 const [sortBy, setSortBy] = useState("match");
 const [selectedJob, setSelectedJob] = useState(null);
 
+
+
+
+const [savedJobs, setSavedJobs] = useState(() => {
+  try {
+    return JSON.parse(localStorage.getItem("internscout_saved_jobs")) || [];
+  } catch {
+    return [];
+  }
+});
   // Student profile
   const [profile, setProfile] = useState({
     name: "",
@@ -253,6 +263,31 @@ const sortedJobs = [...filteredJobs].sort((a, b) => {
 
   return matchB - matchA;
 });
+
+
+// saved jobs functionality
+const toggleSaveJob = (job) => {
+  setSavedJobs((currentSavedJobs) => {
+    const alreadySaved = currentSavedJobs.some(
+      (savedJob) => savedJob.job_id === job.job_id
+    );
+
+    const updatedJobs = alreadySaved
+      ? currentSavedJobs.filter(
+          (savedJob) => savedJob.job_id !== job.job_id
+        )
+      : [...currentSavedJobs, job];
+
+    localStorage.setItem(
+      "internscout_saved_jobs",
+      JSON.stringify(updatedJobs)
+    );
+
+    return updatedJobs;
+  });
+};
+
+
   return (
     <div className="app">
 
@@ -822,7 +857,6 @@ const sortedJobs = [...filteredJobs].sort((a, b) => {
 
 </div>
 
-  // </div>
 )}
         
 
@@ -832,18 +866,7 @@ const sortedJobs = [...filteredJobs].sort((a, b) => {
             : "No description available."}
         </p>
 
-        {/* <div className="job-footer">
-  {job.source_link && (
-    <a
-      className="apply-button"
-      href={job.source_link}
-      target="_blank"
-      rel="noopener noreferrer"
-    >
-      Apply / View Opportunity →
-    </a>
-  )}
-</div> */}
+     
 <div className="job-actions">
  <button
   className="view-details-button"
@@ -862,6 +885,14 @@ const sortedJobs = [...filteredJobs].sort((a, b) => {
       Apply Now ↗
     </a>
   )}
+   <button
+  className="save-job-button"
+  onClick={() => toggleSaveJob(job)}
+>
+  {savedJobs.some((savedJob) => savedJob.job_id === job.job_id)
+    ? "★ Saved"
+    : "☆ Save Job"}
+</button>
 </div>
       
       </div>
@@ -1093,7 +1124,9 @@ const sortedJobs = [...filteredJobs].sort((a, b) => {
         >
           Close
         </button>
+       
       </div>
+      
     </div>
   </div>
 )}
