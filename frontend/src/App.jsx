@@ -9,91 +9,15 @@ import JobFilters from "./components/JobFilters";
 import ResultsHeader from "./components/ResultsHeader";
 import ResultMessage from "./components/ResultsMessage";
 import JobResults from "./components/JobResults";
-const COMMON_SKILLS = [
-  "javascript",
-  "typescript",
-  "java",
-  "python",
-  "c++",
-  "react",
-  "angular",
-  "vue",
-  "node.js",
-  "express",
-  "html",
-  "css",
-  "tailwind",
-  "sql",
-  "mysql",
-  "postgresql",
-  "mongodb",
-  "git",
-  "github",
-  "docker",
-  "kubernetes",
-  "aws",
-  "azure",
-  "machine learning",
-  "deep learning",
-  "tensorflow",
-  "pytorch",
-  "flask",
-  "django",
-  "rest api",
-  "api",
-  "data structures",
-  "algorithms"
-];
-function calculateJobMatch(jobDescription, studentSkills) {
-  const description = (jobDescription || "").toLowerCase();
+import { calculateJobMatch } from "./utils/jobmatching";
 
-  const skills = studentSkills
-    .split(",")
-    .map((skill) => skill.trim().toLowerCase())
-    .filter((skill) => skill !== "");
-
-  // Skills mentioned in the job description
-  const requiredSkills = COMMON_SKILLS.filter((skill) => {
-  const escapedSkill = skill.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-
-  const pattern = new RegExp(
-    `\\b${escapedSkill}\\b`,
-    "i"
-  );
-
-  return pattern.test(description);
-});
-
-  // Skills the student has that are required by the job
-  const matchedSkills = requiredSkills.filter((skill) =>
-    skills.some((studentSkill) =>
-      studentSkill.includes(skill) || skill.includes(studentSkill)
-    )
-  );
-
-  // Skills required by the job but missing from student's profile
-  const missingSkills = requiredSkills.filter(
-    (skill) => !matchedSkills.includes(skill)
-  );
-
-  let matchPercentage = 0;
-
-  if (requiredSkills.length > 0) {
-    matchPercentage = Math.round(
-      (matchedSkills.length / requiredSkills.length) * 100
-    );
-  }
-
-
-
-
-  return {
-    requiredSkills,
-    matchedSkills,
-    missingSkills,
-    matchPercentage
-  };
-}
+import {
+  loadSavedJobs,
+  saveSavedJobs,
+  loadProfile,
+  saveProfile,
+} from "./utils/storage";
+import { fetchJobs } from "./utils/jobApi";
 
 function App() {
   const [jobs, setJobs] = useState([]);
@@ -116,50 +40,17 @@ const [selectedJob, setSelectedJob] = useState(null);
 
 
 
-const [savedJobs, setSavedJobs] = useState(() => {
-  try {
-    return JSON.parse(localStorage.getItem("internscout_saved_jobs")) || [];
-  } catch {
-    return [];
-  }
-});
+const [savedJobs, setSavedJobs] = useState(loadSavedJobs);
 
 const [showSavedJobs, setShowSavedJobs] = useState(false);
 
 
   // Student profile
-  const [profile, setProfile] = useState(() => {
-  try {
-    const savedProfile = localStorage.getItem("internscout_profile");
+ const [profile, setProfile] = useState(loadProfile);
 
-    return savedProfile
-      ? JSON.parse(savedProfile)
-      : {
-          name: "",
-          degree: "",
-          branch: "",
-          year: "",
-          skills: "",
-          preferredRole: "",
-          preferredLocation: "",
-        };
-  } catch {
-    return {
-      name: "",
-      degree: "",
-      branch: "",
-      year: "",
-      skills: "",
-      preferredRole: "",
-      preferredLocation: "",
-    };
-  }
-});
+ 
 useEffect(() => {
-  localStorage.setItem(
-    "internscout_profile",
-    JSON.stringify(profile)
-  );
+  saveProfile(profile);
 }, [profile]);
 
   const updateProfile = (field, value) => {
@@ -207,74 +98,55 @@ const fallbackCompanies = allCompanies
   .slice(0, 5);
 
 
-  const searchJobs = async () => {
-    setLoading(true);
-    setSearched(true);
+  async function searchJobs() {
+  if (!query.trim()) {
+    return;
+  }
 
-    try {
-      const response = await fetch(
-        `http://127.0.0.1:5000/api/jobs?q=${encodeURIComponent(
-          query
-        )}&location=${encodeURIComponent(location)}`
-      );
+  setLoading(true);
+  setSearched(true);
+  setShowSavedJobs(false);
 
-      const data = await response.json();
+  try {
+    const data = await fetchJobs(query, location);
 
-      if (data.success) {
-        setJobs(data.jobs);
-        setNextPageToken(data.next_page_token || null);
-      } else {
-        console.error(data.error);
-        setJobs([]);
-      }
-    } catch (error) {
-      console.error("Error fetching jobs:", error);
-      setJobs([]);
-    }
-
+    setJobs(data.jobs || []);
+    setNextPageToken(data.next_page_token || "");
+  } catch (error) {
+    console.error("Error fetching jobs:", error);
+    setJobs([]);
+    setNextPageToken("");
+  } finally {
     setLoading(false);
-  };
+  }
+}
 
-  const loadMoreJobs = async () => {
-  if (!nextPageToken || loadingMore) return;
+async function loadMoreJobs() {
+  if (!nextPageToken || loadingMore) {
+    return;
+  }
 
   setLoadingMore(true);
 
-
-
-  
   try {
-    const url =
-      `http://127.0.0.1:5000/api/jobs?q=${encodeURIComponent(query)}` +
-      `&location=${encodeURIComponent(location)}` +
-      `&next_page_token=${encodeURIComponent(nextPageToken)}`;
+    const data = await fetchJobs(
+      query,
+      location,
+      nextPageToken
+    );
 
-    const response = await fetch(url);
-    const data = await response.json();
+    setJobs((currentJobs) => [
+      ...currentJobs,
+      ...(data.jobs || []),
+    ]);
 
-    if (!response.ok || !data.success) {
-      throw new Error(data.error || "Unable to load more jobs.");
-    }
-
-    setJobs((previousJobs) => {
-      const existingIds = new Set(
-        previousJobs.map((job) => job.job_id).filter(Boolean)
-      );
-
-      const newJobs = data.jobs.filter(
-        (job) => !job.job_id || !existingIds.has(job.job_id)
-      );
-
-      return [...previousJobs, ...newJobs];
-    });
-
-    setNextPageToken(data.next_page_token || null);
+    setNextPageToken(data.next_page_token || "");
   } catch (error) {
-    console.error("Load more jobs failed:", error);
+    console.error("Error loading more jobs:", error);
   } finally {
     setLoadingMore(false);
   }
-};
+}
 
 
 
@@ -315,10 +187,7 @@ const toggleSaveJob = (job) => {
         )
       : [...currentSavedJobs, job];
 
-    localStorage.setItem(
-      "internscout_saved_jobs",
-      JSON.stringify(updatedJobs)
-    );
+   saveSavedJobs(updatedJobs);
 
     return updatedJobs;
   });
