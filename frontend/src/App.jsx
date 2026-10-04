@@ -6,6 +6,9 @@ import JobDetailsModal from "./components/JobDetailsModal";
 import ProfileForm from "./components/ProfileForm";
 import SearchBar from "./components/SearchBar";
 import JobFilters from "./components/JobFilters";
+import ResultsHeader from "./components/ResultsHeader";
+import ResultMessage from "./components/ResultsMessage";
+import JobResults from "./components/JobResults";
 const COMMON_SKILLS = [
   "javascript",
   "typescript",
@@ -364,91 +367,39 @@ const toggleSaveJob = (job) => {
 
       {/* Results */}
       <main className="results">
+  <ResultMessage
 
-        {loading && (
-          <div className="message">
-            🔎 Finding live opportunities...
-          </div>
-        )}
-
-{!loading && searched && filteredJobs.length === 0 && (
-  <div className="message">
-    {showSavedJobs
-      ? "⭐ You haven't saved any jobs yet."
-      : "No opportunities found for this filter. Try another role or location."}
-  
-
-
-  {companyFilter && (
-    <button
-      type="button"
-      className="company-reset-main-button"
-      onClick={() => setCompanyFilter("")}
-    >
-      ← Clear company filter
-    </button>
-  )}
-</div>
-)}
-
-        {!loading && filteredJobs.length > 0 && (
-          <>
-        <div className="results-header">
- <h2>
-  {showSavedJobs ? "⭐ Saved Jobs" : "Live Opportunities"}
-</h2>
-
-<span>
-  {filteredJobs.length}{" "}
-  {showSavedJobs ? "saved jobs" : "opportunities"} shown
-</span>
-</div>
-
-
-
-{/* Job filter and sorting
- */}
-<JobFilters
-  sortBy={sortBy}
-  setSortBy={setSortBy}
-  companyFilter={companyFilter}
-  setCompanyFilter={setCompanyFilter}
-  companySuggestions={companySuggestions}
-  allCompanies={allCompanies}
-  fallbackCompanies={fallbackCompanies}
+loading={loading}
+searched={searched}
+filteredJobs={filteredJobs}
+showSavedJobs={showSavedJobs}
+companyFilter={companyFilter}
+setCompanyFilter={setCompanyFilter}
 />
 
+        
 
-
-
-          <div className="job-grid">
-  {sortedJobs.map((job, index) => (
-    <JobCard
-      key={job.job_id || index}
-      job={job}
-      profile={profile}
-      savedJobs={savedJobs}
-      toggleSaveJob={toggleSaveJob}
-      setSelectedJob={setSelectedJob}
-      calculateJobMatch={calculateJobMatch}
-    />
-  ))}
-</div>
-
-
-{nextPageToken && !showSavedJobs && (
-  <div className="load-more-container">
-    <button
-      className="load-more-button"
-      onClick={loadMoreJobs}
-      disabled={loadingMore}
-    >
-      {loadingMore ? "Loading..." : "Load More Jobs"}
-    </button>
-  </div>
+{!loading && filteredJobs.length > 0 && (
+  <JobResults
+    filteredJobs={sortedJobs}
+    showSavedJobs={showSavedJobs}
+    sortBy={sortBy}
+    setSortBy={setSortBy}
+    companyFilter={companyFilter}
+    setCompanyFilter={setCompanyFilter}
+    companySuggestions={companySuggestions}
+    allCompanies={allCompanies}
+    fallbackCompanies={fallbackCompanies}
+    profile={profile}
+    savedJobs={savedJobs}
+    toggleSaveJob={toggleSaveJob}
+    setSelectedJob={setSelectedJob}
+    calculateJobMatch={calculateJobMatch}
+    nextPageToken={nextPageToken}
+    loadMoreJobs={loadMoreJobs}
+    loadingMore={loadingMore}
+  />
 )}
-    </>
-        )}
 
       </main>
 
