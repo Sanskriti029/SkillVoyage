@@ -117,6 +117,8 @@ const [savedJobs, setSavedJobs] = useState(() => {
   }
 });
 
+const [showSavedJobs, setShowSavedJobs] = useState(false);
+
 
   // Student profile
   const [profile, setProfile] = useState(() => {
@@ -159,7 +161,9 @@ useEffect(() => {
       [field]: value
     });
   };
-const filteredJobs = jobs
+const baseJobs = showSavedJobs ? savedJobs : jobs;
+
+const filteredJobs = baseJobs
   .filter((job) => !internshipsOnly || job.is_internship)
   .filter((job) =>
     (job.company || "")
@@ -504,7 +508,17 @@ const toggleSaveJob = (job) => {
           </button>
 
         </div>
-
+<button
+  className="saved-jobs-button"
+  onClick={() => setShowSavedJobs((current) => !current)}
+>
+  ⭐ {showSavedJobs ? "View All Jobs" : "View Saved Jobs"}
+  {savedJobs.length > 0 && (
+    <span className="saved-jobs-count">
+      {savedJobs.length}
+    </span>
+  )}
+</button>
       </section>
 
 
@@ -519,9 +533,11 @@ const toggleSaveJob = (job) => {
 
 {!loading && searched && filteredJobs.length === 0 && (
   <div className="message">
-  <p>
-    No jobs match your current filters.
-  </p>
+    {showSavedJobs
+      ? "⭐ You haven't saved any jobs yet."
+      : "No opportunities found for this filter. Try another role or location."}
+  
+
 
   {companyFilter && (
     <button
@@ -535,13 +551,17 @@ const toggleSaveJob = (job) => {
 </div>
 )}
 
-        {!loading && jobs.length > 0 && (
+        {!loading && filteredJobs.length > 0 && (
           <>
            <div className="results-header">
-  <h2>Live Opportunities</h2>
-  <span>
-    {filteredJobs.length} opportunities shown
-  </span>
+ <h2>
+  {showSavedJobs ? "⭐ Saved Jobs" : "Live Opportunities"}
+</h2>
+
+<span>
+  {filteredJobs.length}{" "}
+  {showSavedJobs ? "saved jobs" : "opportunities"} shown
+</span>
 </div>
 
 
@@ -927,7 +947,7 @@ const toggleSaveJob = (job) => {
   })}
 
 </div>
-{nextPageToken && (
+{nextPageToken && !showSavedJobs && (
   <div className="load-more-container">
     <button
       className="load-more-button"
