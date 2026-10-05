@@ -20,6 +20,8 @@ function JobResults({
   nextPageToken,
   loadMoreJobs,
   loadingMore,
+  onOpenPitch,
+  onOpenInterview,
 }) {
   if (filteredJobs.length === 0) {
     return null;
@@ -52,6 +54,8 @@ function JobResults({
             toggleSaveJob={toggleSaveJob}
             setSelectedJob={setSelectedJob}
             calculateJobMatch={calculateJobMatch}
+            onOpenPitch={onOpenPitch}
+            onOpenInterview={onOpenInterview}
           />
         ))}
       </div>
@@ -59,7 +63,7 @@ function JobResults({
       {nextPageToken && !showSavedJobs && (
         <div className="load-more-container">
           <button
-            className="load-more-button"
+            className="load-more-button btn-primary"
             onClick={loadMoreJobs}
             disabled={loadingMore}
           >

@@ -1,4 +1,4 @@
-
+import React from "react";
 
 function SearchBar({
   query,
@@ -8,71 +8,131 @@ function SearchBar({
   internshipsOnly,
   setInternshipsOnly,
   searchJobs,
-  showSavedJobs,
-  setShowSavedJobs,
-  savedJobs,
-})  {
+  loading,
+  activeTab,
+  setActiveTab,
+  savedJobsCount,
+}) {
+  const quickSearches = [
+    "Software Engineer",
+    "Frontend Developer",
+    "Backend Engineer",
+    "Data Science",
+    "Full Stack Intern",
+    "Cybersecurity",
+  ];
+
+  const handleQuickSearch = (role) => {
+    setQuery(`${role} intern`);
+    searchJobs();
+  };
+
   return (
-       <section className="search-section">
+    <section className="hero-search-section">
+      <div className="hero-glow-bg"></div>
 
-        <h1>Find Your Next Internship</h1>
+      {/* Hero Header */}
+      <div className="hero-header">
+        <div className="hero-tag">
+          <span className="sparkle">✨</span>
+          <span>AI-Powered Skill Gap Analysis & Live Internship Engine</span>
+        </div>
 
-        <p className="subtitle">
-          Search live opportunities powered by SerpApi.
+        <h1 className="hero-title">
+          Land Internships Built For <span className="gradient-text">Your Exact Skillset</span>
+        </h1>
+
+        <p className="hero-subtitle">
+          Search real-time tech opportunities, measure your candidate match score, and get personalized skill roadmaps to get hired.
         </p>
+      </div>
 
-        <div className="search-box">
-
-          <div className="input-group">
-            <label>🔍 Role</label>
-
+      {/* Search Bar Container */}
+      <div className="search-card">
+        <div className="search-inputs">
+          {/* Query Input */}
+          <div className="search-field">
+            <label htmlFor="role-input">
+              <span className="field-icon">🔍</span>
+              <span>Role / Keywords</span>
+            </label>
             <input
+              id="role-input"
               type="text"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              placeholder="Software Engineer Intern"
+              placeholder="e.g. Software Engineer, React Developer..."
+              onKeyDown={(e) => e.key === "Enter" && searchJobs()}
             />
           </div>
 
+          <div className="field-divider"></div>
 
-          <div className="input-group">
-            <label>📍 Location</label>
-
+          {/* Location Input */}
+          <div className="search-field">
+            <label htmlFor="location-input">
+              <span className="field-icon">📍</span>
+              <span>Location</span>
+            </label>
             <input
+              id="location-input"
               type="text"
               value={location}
               onChange={(e) => setLocation(e.target.value)}
-              placeholder="Bangalore, India"
+              placeholder="e.g. Bangalore, Remote, India..."
+              onKeyDown={(e) => e.key === "Enter" && searchJobs()}
             />
-            
           </div>
-
-<label className="internship-filter">
-  <input
-    type="checkbox"
-    checked={internshipsOnly}
-    onChange={(e) => setInternshipsOnly(e.target.checked)}
-  />
-  Internships only
-</label>
-          <button onClick={searchJobs}>
-            Search Internships
-          </button>
-
         </div>
-<button
-  className="saved-jobs-button"
-  onClick={() => setShowSavedJobs((current) => !current)}
->
-  ⭐ {showSavedJobs ? "View All Jobs" : "View Saved Jobs"}
-  {savedJobs.length > 0 && (
-    <span className="saved-jobs-count">
-      {savedJobs.length}
-    </span>
-  )}
-</button>
-      </section>
-  )
+
+        {/* Search Controls & Action */}
+        <div className="search-actions-row">
+          <label className="toggle-switch">
+            <input
+              type="checkbox"
+              checked={internshipsOnly}
+              onChange={(e) => setInternshipsOnly(e.target.checked)}
+            />
+            <span className="toggle-slider"></span>
+            <span className="toggle-label">🎓 Internships only</span>
+          </label>
+
+          <button
+            className="search-btn"
+            onClick={searchJobs}
+            disabled={loading}
+          >
+            {loading ? (
+              <span className="loading-spinner-wrapper">
+                <span className="spinner"></span> Searching...
+              </span>
+            ) : (
+              <>
+                <span>Search Internships</span>
+                <span className="arrow-icon">🚀</span>
+              </>
+            )}
+          </button>
+        </div>
+      </div>
+
+      {/* Quick Search Chips */}
+      <div className="quick-searches">
+        <span className="quick-label">Popular Searches:</span>
+        <div className="quick-chips">
+          {quickSearches.map((item) => (
+            <button
+              key={item}
+              className="quick-chip"
+              onClick={() => handleQuickSearch(item)}
+            >
+              {item}
+            </button>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
 }
 
-export default SearchBar
+export default SearchBar;

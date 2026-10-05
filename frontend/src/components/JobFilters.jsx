@@ -1,3 +1,5 @@
+import React from "react";
+
 function JobFilters({
   sortBy,
   setSortBy,
@@ -8,90 +10,60 @@ function JobFilters({
   fallbackCompanies,
 }) {
   return (
-    <>
-      {/* Sort Jobs */}
-      <div className="job-sort-control">
-        <label htmlFor="job-sort">Sort jobs by:</label>
-
-        <select
-          id="job-sort"
-          value={sortBy}
-          onChange={(e) => setSortBy(e.target.value)}
-          className="job-sort-select"
-        >
-          <option value="match">Highest Skill Match</option>
-          <option value="company">Company Name (A–Z)</option>
-        </select>
-      </div>
-
-      {/* Company Filter */}
-      <div className="company-filter-wrapper">
-        <div className="company-input-row">
+    <div className="filter-controls-bar">
+      {/* Company Search with Suggestions */}
+      <div className="company-filter-box">
+        <div className="input-with-icon">
+          <span className="input-icon">🏢</span>
           <input
             type="text"
-            className="filter-input"
-            placeholder="Search company name..."
+            className="filter-input-field"
             value={companyFilter}
             onChange={(e) => setCompanyFilter(e.target.value)}
-            aria-label="Filter jobs by company"
-            autoComplete="off"
+            placeholder="Filter by company name..."
           />
-
           {companyFilter && (
             <button
-              type="button"
-              className="clear-company-button"
+              className="clear-filter-btn"
               onClick={() => setCompanyFilter("")}
-              aria-label="Clear company filter"
+              title="Clear filter"
             >
               ✕
             </button>
           )}
         </div>
 
-        {companyFilter.trim() &&
-          companySuggestions.length === 0 &&
-          allCompanies.length > 0 && (
-            <div className="company-suggestions">
-
-              <div className="company-no-suggestions">
-                ❌ No matching company found for "{companyFilter}"
-              </div>
-
+        {/* Company Dropdown Suggestions */}
+        {companyFilter.trim() && companySuggestions.length > 0 && (
+          <div className="company-dropdown shadow-lg">
+            {companySuggestions.map((company) => (
               <button
-                type="button"
-                className="company-reset-button"
-                onClick={() => setCompanyFilter("")}
+                key={company}
+                className="dropdown-item"
+                onClick={() => setCompanyFilter(company)}
               >
-                ← Show all companies
+                <span>{company}</span>
+                <span className="item-tag">Match</span>
               </button>
-
-              {fallbackCompanies.length > 0 && (
-                <>
-                  <div className="company-no-suggestions">
-                    Or choose a company:
-                  </div>
-
-                  {fallbackCompanies.map((company) => (
-                    <button
-                      type="button"
-                      className="company-suggestion"
-                      key={company}
-                      onClick={() => setCompanyFilter(company)}
-                    >
-                      <span>{company}</span>
-
-                      <span className="suggestion-label">
-                        Use this
-                      </span>
-                    </button>
-                  ))}
-                </>
-              )}
-            </div>
-          )}
+            ))}
+          </div>
+        )}
       </div>
-    </>
+
+      {/* Sort Selector */}
+      <div className="sort-box">
+        <label htmlFor="sort-select">Sort Opportunities:</label>
+        <select
+          id="sort-select"
+          className="sort-select-field"
+          value={sortBy}
+          onChange={(e) => setSortBy(e.target.value)}
+        >
+          <option value="match">🔥 Highest Skill Match</option>
+          <option value="company">🏢 Company Name (A-Z)</option>
+        </select>
+      </div>
+    </div>
   );
 }
 

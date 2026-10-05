@@ -1,3 +1,4 @@
+import React, { useState } from "react";
 import skillRoadmaps from "../data/skillRoadmaps";
 
 function JobDetailsModal({
@@ -5,213 +6,207 @@ function JobDetailsModal({
   profile,
   setSelectedJob,
   calculateJobMatch,
+  onOpenPitch,
+  onOpenInterview,
 }) {
-  if (!selectedJob) {
-    return null;
-  }
+  const [modalTab, setModalTab] = useState("overview");
 
-  const selectedMatch = calculateJobMatch(
+  if (!selectedJob) return null;
+
+  const match = calculateJobMatch(
     selectedJob.description || "",
     profile.skills
   );
 
   return (
     <div
-      className="job-details-overlay"
+      className="modal-overlay"
       onClick={() => setSelectedJob(null)}
     >
       <div
-        className="job-details-panel"
-        onClick={(event) => event.stopPropagation()}
+        className="modal-container"
+        onClick={(e) => e.stopPropagation()}
       >
-        {/* Close button */}
         <button
-          className="job-details-close"
+          className="modal-close-btn"
           onClick={() => setSelectedJob(null)}
-          aria-label="Close job details"
+          aria-label="Close modal"
         >
           ✕
         </button>
 
-        {/* Header */}
-        <div className="job-details-header">
-          <span className="job-details-type">
-            💼 Job Opportunity
-          </span>
-
-          <h2>
-            {selectedJob.title || "Job Title"}
-          </h2>
-
-          <p className="job-details-company">
-            🏢 {selectedJob.company_name ||
-              selectedJob.company ||
-              "Company not specified"}
-          </p>
-
-          <p className="job-details-location">
-            📍 {selectedJob.location ||
-              "Location not specified"}
-          </p>
-        </div>
-
-        {/* Match summary */}
-        <div className="details-match-card">
-          <div className="details-match-score">
-            <strong>
-              {selectedMatch.matchPercentage}%
-            </strong>
-
-            <span>Skill Match</span>
+        <div className="modal-header">
+          <div className="modal-badge-row">
+            <span className="modal-type-badge">💼 Internship Opportunity</span>
+            {selectedJob.via && (
+              <span className="modal-via-badge">via {selectedJob.via}</span>
+            )}
           </div>
 
-          <div className="details-match-info">
-            <strong>Your match for this job</strong>
+          <h2 className="modal-job-title">{selectedJob.title || "Job Title"}</h2>
 
-            <p>
-              {selectedMatch.matchedSkills.length > 0
-                ? `You already match ${
-                    selectedMatch.matchedSkills.length
-                  } relevant skill${
-                    selectedMatch.matchedSkills.length !== 1
-                      ? "s"
-                      : ""
-                  } detected in this job.`
-                : "No specific skill overlap was detected from the available job description."}
-            </p>
+          <div className="modal-meta-row">
+            <span className="modal-company">
+              🏢 {selectedJob.company_name || selectedJob.company || "Company not specified"}
+            </span>
+            <span className="modal-location">
+              📍 {selectedJob.location || "Location not specified"}
+            </span>
           </div>
         </div>
 
-        {/* Skills you have */}
-        {selectedMatch.matchedSkills.length > 0 && (
-          <div className="job-details-section">
-            <h3>✅ Skills you have</h3>
+        <div className="modal-tabs">
+          <button
+            className={`modal-tab-btn ${modalTab === "overview" ? "active" : ""}`}
+            onClick={() => setModalTab("overview")}
+          >
+            📊 Match Overview
+          </button>
 
-            <div className="details-skill-list">
-              {selectedMatch.matchedSkills.map((skill) => (
-                <span
-                  className="details-skill matched"
-                  key={skill}
-                >
-                  ✓ {skill}
-                </span>
-              ))}
-            </div>
-          </div>
-        )}
+          <button
+            className={`modal-tab-btn ${modalTab === "roadmap" ? "active" : ""}`}
+            onClick={() => setModalTab("roadmap")}
+          >
+            📚 Skill Roadmap ({match.missingSkills.length})
+          </button>
 
-        {/* Skills to improve */}
-        {selectedMatch.missingSkills.length > 0 && (
-          <div className="job-details-section">
-            <h3>⚠️ Skills to improve</h3>
+          <button
+            className={`modal-tab-btn ${modalTab === "description" ? "active" : ""}`}
+            onClick={() => setModalTab("description")}
+          >
+            📝 Job Description
+          </button>
+        </div>
 
-            <div className="details-skill-list">
-              {selectedMatch.missingSkills.map((skill) => (
-                <span
-                  className="details-skill missing"
-                  key={skill}
-                >
-                  {skill}
-                </span>
-              ))}
-            </div>
-          </div>
-        )}
+        <div className="modal-body">
+          {modalTab === "overview" && (
+            <div className="modal-tab-content">
+              <div className="modal-match-card">
+                <div className="modal-match-circle">
+                  <span className="circle-pct">{match.matchPercentage}%</span>
+                  <span className="circle-lbl">Match</span>
+                </div>
+                <div className="modal-match-detail">
+                  <h4>Candidate Profile Alignment</h4>
+                  <p>
+                    {match.matchedSkills.length > 0
+                      ? `Your profile matches ${match.matchedSkills.length} required skill${
+                          match.matchedSkills.length !== 1 ? "s" : ""
+                        } detected in this job listing.`
+                      : "This opportunity requires fundamental technology skills. Check the roadmap tab to build your fit."}
+                  </p>
+                </div>
+              </div>
 
-        {/* Why you match */}
-        <div className="job-details-section">
-          <h3>💡 Why you match</h3>
-
-          {selectedMatch.matchedSkills.length > 0 ? (
-            <p>
-              Your profile matches this opportunity because you
-              already have{" "}
-              <strong>
-                {selectedMatch.matchedSkills.join(", ")}
-              </strong>
-              .
-
-              {selectedMatch.missingSkills.length > 0 && (
-                <>
-                  {" "}
-                  You can improve your fit further by developing{" "}
-                  <strong>
-                    {selectedMatch.missingSkills.join(", ")}
-                  </strong>
-                  .
-                </>
+              {match.matchedSkills.length > 0 && (
+                <div className="modal-section">
+                  <h3>✅ Matching Skills in Profile</h3>
+                  <div className="modal-chip-grid">
+                    {match.matchedSkills.map((sk) => (
+                      <span key={sk} className="modal-chip matched">
+                        ✓ {sk}
+                      </span>
+                    ))}
+                  </div>
+                </div>
               )}
-            </p>
-          ) : (
-            <p>
-              No specific skill overlap was detected from the
-              available job description.
-            </p>
+
+              {match.missingSkills.length > 0 && (
+                <div className="modal-section">
+                  <h3>⚠️ Target Skill Gaps</h3>
+                  <p className="modal-section-hint">
+                    Acquiring these skills will improve your candidacy for this role:
+                  </p>
+                  <div className="modal-chip-grid">
+                    {match.missingSkills.map((sk) => (
+                      <span key={sk} className="modal-chip missing">
+                        + {sk}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+
+          {modalTab === "roadmap" && (
+            <div className="modal-tab-content">
+              {match.missingSkills.length === 0 ? (
+                <div className="roadmap-perfect-state">
+                  <span className="star-icon">🌟</span>
+                  <h4>You match all detected skills!</h4>
+                  <p>
+                    You have all key skills detected for this position. Submit your application now.
+                  </p>
+                </div>
+              ) : (
+                <div className="modal-roadmap-list">
+                  {match.missingSkills.map((sk) => {
+                    const roadmap = skillRoadmaps[sk];
+                    if (!roadmap) return null;
+
+                    return (
+                      <div key={sk} className="modal-roadmap-card">
+                        <div className="modal-roadmap-head">
+                          <h4>🎯 {roadmap.title} Roadmap</h4>
+                          <span className="skill-gap-tag">Skill Gap</span>
+                        </div>
+                        <div className="modal-roadmap-learn">
+                          <strong>Topics to Master:</strong>
+                          <ul>
+                            {roadmap.learn.map((item, i) => (
+                              <li key={i}>{item}</li>
+                            ))}
+                          </ul>
+                        </div>
+                        <div className="modal-roadmap-practice">
+                          <strong>💻 Recommended Hands-on Project:</strong>
+                          <p>{roadmap.practice}</p>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+          )}
+
+          {modalTab === "description" && (
+            <div className="modal-tab-content">
+              <div className="job-description-box">
+                <p className="description-text">
+                  {selectedJob.description ||
+                    "No full description provided for this job listing."}
+                </p>
+              </div>
+            </div>
           )}
         </div>
 
-        {/* Preparation plan */}
-        {selectedMatch.missingSkills.length > 0 && (
-          <div className="job-details-section">
-            <h3>📚 Preparation Plan</h3>
+        <div className="modal-footer">
+          <button
+            className="btn-secondary"
+            onClick={() => {
+              setSelectedJob(null);
+              if (onOpenPitch) onOpenPitch(selectedJob);
+            }}
+          >
+            ✉️ AI Pitch
+          </button>
 
-            <p className="details-section-intro">
-              Build these skills to improve your match for this
-              opportunity.
-            </p>
+          <button
+            className="btn-secondary"
+            onClick={() => {
+              setSelectedJob(null);
+              if (onOpenInterview) onOpenInterview(selectedJob);
+            }}
+          >
+            🎙️ Practice Interview
+          </button>
 
-            <div className="details-roadmap-list">
-              {selectedMatch.missingSkills.map((skill) => {
-                const roadmap = skillRoadmaps[skill];
-
-                if (!roadmap) {
-                  return null;
-                }
-
-                return (
-                  <div
-                    className="details-roadmap-card"
-                    key={skill}
-                  >
-                    <div className="details-roadmap-header">
-                      <strong>
-                        🎯 {roadmap.title}
-                      </strong>
-
-                      <span>Skill Gap</span>
-                    </div>
-
-                    <p>
-                      <strong>Learn:</strong>{" "}
-                      {roadmap.learn.join(" → ")}
-                    </p>
-
-                    <div className="details-practice">
-                      <strong>💻 Practice:</strong>{" "}
-                      {roadmap.practice}
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-        )}
-
-        {/* Job description */}
-        <div className="job-details-section">
-          <h3>📝 Job Description</h3>
-
-          <p className="job-description-full">
-            {selectedJob.description ||
-              "No detailed job description is available for this opportunity."}
-          </p>
-        </div>
-
-        {/* Actions */}
-        <div className="job-details-actions">
           {selectedJob.apply_options?.[0]?.link && (
             <a
-              className="apply-button large"
+              className="btn-primary large"
               href={selectedJob.apply_options[0].link}
               target="_blank"
               rel="noopener noreferrer"
@@ -219,13 +214,6 @@ function JobDetailsModal({
               Apply Now ↗
             </a>
           )}
-
-          <button
-            className="secondary-button"
-            onClick={() => setSelectedJob(null)}
-          >
-            Close
-          </button>
         </div>
       </div>
     </div>

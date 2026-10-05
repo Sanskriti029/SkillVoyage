@@ -1,3 +1,5 @@
+import React from "react";
+
 function ResultsMessage({
   loading,
   searched,
@@ -8,29 +10,43 @@ function ResultsMessage({
 }) {
   if (loading) {
     return (
-      <div className="message">
-        🔎 Finding live opportunities...
+      <div className="status-card-message loading">
+        <div className="pulse-spinner"></div>
+        <h3>Fetching Live Opportunities...</h3>
+        <p>Connecting to Google Jobs & analyzing candidate match matrices...</p>
       </div>
     );
   }
 
-  if (!searched || filteredJobs.length > 0) {
+  if (!searched && !showSavedJobs) {
+    return null;
+  }
+
+  if (filteredJobs.length > 0) {
     return null;
   }
 
   return (
-    <div className="message">
-      {showSavedJobs
-        ? "⭐ You haven't saved any jobs yet."
-        : "No opportunities found for this filter. Try another role or location."}
+    <div className="status-card-message empty">
+      <span className="status-emoji">🔍</span>
+      <h3>
+        {showSavedJobs
+          ? "No Saved Jobs Found"
+          : "No Internship Opportunities Match Your Criteria"}
+      </h3>
+      <p>
+        {showSavedJobs
+          ? "Click the star icon on any job card to save it for quick reference later."
+          : "Try broadening your query keywords, location filter, or toggling company filters."}
+      </p>
 
       {companyFilter && (
         <button
           type="button"
-          className="company-reset-main-button"
+          className="btn-secondary mt-3"
           onClick={() => setCompanyFilter("")}
         >
-          ← Clear company filter
+          ← Clear Company Filter ("{companyFilter}")
         </button>
       )}
     </div>
