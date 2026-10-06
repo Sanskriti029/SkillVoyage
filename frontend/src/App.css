@@ -2348,3 +2348,32 @@
 }
 
 
+/* =========================================
+   SKILL MATCH UNAVAILABLE
+   ========================================= */
+
+.match-unavailable {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.match-unavailable strong {
+  font-size: 14px;
+}
+
+.match-unavailable span {
+  font-size: 11px;
+  line-height: 1.4;
+  opacity: 0.9;
+}
+
+.match-unavailable-banner {
+  border-color: #f59e0b;
+}
+
+.circle-warning {
+  font-size: 28px;
+  display: block;
+  margin-bottom: 4px;
+}

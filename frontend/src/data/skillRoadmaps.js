@@ -228,7 +228,57 @@ const skillRoadmaps = {
       "Connecting databases"
     ],
     practice: "Build a small Flask REST API."
-  }
+  },  agile: {
+    title: "Agile",
+    learn: [
+      "Agile principles and values",
+      "Scrum roles, events, and artifacts",
+      "User stories and acceptance criteria",
+      "Sprint planning and daily stand-ups",
+      "Backlog management and retrospectives",
+    ],
+    practice:
+      "Create a small project backlog with user stories, prioritize the stories, and plan a one-week sprint."
+  },
+
+  communication: {
+    title: "Communication",
+    learn: [
+      "Technical communication basics",
+      "Writing clear emails and messages",
+      "Explaining technical concepts simply",
+      "Active listening and asking effective questions",
+      "Presenting projects and discussing solutions",
+    ],
+    practice:
+      "Prepare a 2-minute explanation of one of your projects as if you were explaining it to an interviewer."
+  },
+
+  kubernetes: {
+    title: "Kubernetes",
+    learn: [
+      "Containers and Kubernetes fundamentals",
+      "Pods, Deployments, and Services",
+      "Namespaces and configuration",
+      "Scaling and rolling updates",
+      "Basic kubectl commands",
+    ],
+    practice:
+      "Containerize a simple web application with Docker and deploy it locally using Kubernetes."
+  },
+
+  gcp: {
+    title: "GCP",
+    learn: [
+      "Google Cloud fundamentals",
+      "Projects, regions, and zones",
+      "Compute Engine and Cloud Run",
+      "Cloud Storage",
+      "IAM and basic cloud security",
+    ],
+    practice:
+      "Deploy a small web application to Google Cloud and store a sample file using Cloud Storage."
+  },
 };
 
 export default skillRoadmaps;

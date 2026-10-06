@@ -1,65 +1,57 @@
 export const COMMON_SKILLS = [
+  // Programming
   "javascript",
   "typescript",
   "java",
   "python",
   "c++",
-  "c",
-  "c#",
-  "go",
-  "rust",
-  "kotlin",
-  "swift",
-  "php",
-  "ruby",
+
+  // Frontend
   "react",
-  "next.js",
   "angular",
   "vue",
+  "html",
+  "css",
+  "tailwind",
+
+  // Backend
   "node.js",
   "express",
   "flask",
   "django",
-  "fastapi",
-  "html",
-  "css",
-  "tailwind",
-  "tailwind css",
-  "bootstrap",
+  "rest api",
+  "api",
+
+  // Databases
   "sql",
   "mysql",
   "postgresql",
   "mongodb",
-  "redis",
-  "firebase",
+
+  // Development tools
   "git",
   "github",
   "docker",
   "kubernetes",
+
+  // Cloud
   "aws",
   "azure",
   "gcp",
+
+  // Engineering / methodology
+  "agile",
+  "communication",
+
+  // AI / Data
   "machine learning",
   "deep learning",
   "tensorflow",
   "pytorch",
-  "scikit-learn",
-  "pandas",
-  "numpy",
-  "opencv",
-  "nlp",
-  "rest api",
-  "api",
-  "graphql",
+
+  // CS fundamentals
   "data structures",
   "algorithms",
-  "system design",
-  "devops",
-  "ci/cd",
-  "agile",
-  "communication",
-  "problem solving",
-  "teamwork",
 ];
 
 export function calculateJobMatch(jobDescription, studentSkills) {
@@ -70,7 +62,6 @@ export function calculateJobMatch(jobDescription, studentSkills) {
     .map((skill) => skill.trim().toLowerCase())
     .filter((skill) => skill !== "");
 
-  // Skills mentioned in the job description
   const requiredSkills = COMMON_SKILLS.filter((skill) => {
     const escapedSkill = skill.replace(
       /[.*+?^${}()|[\]\\]/g,
@@ -85,7 +76,6 @@ export function calculateJobMatch(jobDescription, studentSkills) {
     return pattern.test(description);
   });
 
-  // Skills the student has that are required by the job
   const matchedSkills = requiredSkills.filter((skill) =>
     skills.some(
       (studentSkill) =>
@@ -94,14 +84,20 @@ export function calculateJobMatch(jobDescription, studentSkills) {
     )
   );
 
-  // Skills required by the job but missing from student's profile
   const missingSkills = requiredSkills.filter(
     (skill) => !matchedSkills.includes(skill)
   );
 
+  /*
+   * If the job description does not contain
+   * enough recognizable skills, don't pretend
+   * that the match percentage is reliable.
+   */
+  const hasEnoughSkillInformation = requiredSkills.length >= 2;
+
   let matchPercentage = 0;
 
-  if (requiredSkills.length > 0) {
+  if (hasEnoughSkillInformation) {
     matchPercentage = Math.round(
       (matchedSkills.length / requiredSkills.length) * 100
     );
@@ -112,5 +108,6 @@ export function calculateJobMatch(jobDescription, studentSkills) {
     matchedSkills,
     missingSkills,
     matchPercentage,
+    hasEnoughSkillInformation,
   };
 }
