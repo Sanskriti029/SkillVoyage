@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import skillRoadmaps from "../data/skillRoadmaps";
+import { calculateOpportunityScore } from "../utils/jobmatching";
 
 function JobCard({
   job,
@@ -14,7 +15,15 @@ function JobCard({
   const [showRoadmap, setShowRoadmap] = useState(false);
 
   const match = calculateJobMatch(job.description, profile.skills);
+  const oppScore = calculateOpportunityScore(job, profile);
   const isSaved = savedJobs.some((savedJob) => savedJob.job_id === job.job_id);
+
+  const getScoreTier = (score) => {
+    if (score >= 80) return "score-excellent";
+    if (score >= 60) return "score-good";
+    if (score >= 40) return "score-fair";
+    return "score-poor";
+  };
 
   const getMatchTier = (pct) => {
     if (pct >= 75) return "high-match";
@@ -77,9 +86,11 @@ function JobCard({
       </div>
 
       <div className={`match-banner ${getMatchTier(match.matchPercentage)}`}>
-        <div className="match-score-badge">
-          <div className="match-number">{match.matchPercentage}%</div>
-          <div className="match-label">Skill Match</div>
+        <div className="opportunity-score-badge">
+          <div className={`opp-score ${getScoreTier(oppScore.totalScore)}`}>
+            {oppScore.totalScore}%
+          </div>
+          <div className="score-label">Opportunity<br/>Score</div>
         </div>
 
         <div className="match-skills-preview">
@@ -120,6 +131,21 @@ function JobCard({
               General internship — skills extracted from details.
             </span>
           )}
+        </div>
+      </div>
+
+      <div className="opportunity-breakdown">
+        <div className="breakdown-item">
+          <span className="breakdown-label">Skills:</span>
+          <span className="breakdown-score">{oppScore.skillMatchScore}%</span>
+        </div>
+        <div className="breakdown-item">
+          <span className="breakdown-label">Role:</span>
+          <span className="breakdown-score">{oppScore.roleMatchScore}%</span>
+        </div>
+        <div className="breakdown-item">
+          <span className="breakdown-label">Location:</span>
+          <span className="breakdown-score">{oppScore.locationMatchScore}%</span>
         </div>
       </div>
 
