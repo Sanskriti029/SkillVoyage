@@ -28,3 +28,33 @@ export async function fetchJobs(query, location, pageToken = "") {
 
   return data;
 }
+
+export async function parseResumeApi({ file, text }) {
+  let response;
+
+  if (file) {
+    const formData = new FormData();
+    formData.append("file", file);
+
+    response = await fetch(`${API_BASE_URL}/api/parse-resume`, {
+      method: "POST",
+      body: formData,
+    });
+  } else {
+    response = await fetch(`${API_BASE_URL}/api/parse-resume`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ text }),
+    });
+  }
+
+  const data = await response.json();
+
+  if (!response.ok || !data.success) {
+    throw new Error(data.error || "Failed to parse resume on server");
+  }
+
+  return data;
+}

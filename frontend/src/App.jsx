@@ -2,11 +2,15 @@ import { useEffect, useState } from "react";
 import "./App.css";
 
 import SearchBar from "./components/SearchBar";
+import Navbar from "./components/Navbar";
 import ProfileForm from "./components/ProfileForm";
 import Dashboard from "./components/Dashboard";
+import KanbanTracker from "./components/KanbanTracker";
 import JobResults from "./components/JobResults";
 import ResultsMessage from "./components/ResultsMessage";
 import JobDetailsModal from "./components/JobDetailsModal";
+import CoverLetterModal from "./components/CoverLetterModal";
+import MockInterviewModal from "./components/MockInterviewModal";
 
 
 import { calculateJobMatch } from "./utils/jobmatching";
@@ -183,23 +187,36 @@ function App() {
 
   return (
     <div className="app-shell">
-      
+      <Navbar
+        activeTab={activeTab}
+        setActiveTab={setActiveTab}
+        savedJobsCount={savedJobs.length}
+        profileCompletion={profileCompletion}
+      />
 
       {/* Main Content Body */}
       <main className="main-content">
-        
+        {activeTab === "profile" ? (
           <ProfileForm
             profile={profile}
             updateProfile={updateProfile}
             setProfile={setProfile}
           />
+        ) : activeTab === "dashboard" ? (
           <Dashboard
             profile={profile}
             savedJobs={savedJobs}
             setActiveTab={setActiveTab}
             setSelectedJob={setSelectedJob}
           />
-        
+        ) : activeTab === "saved" ? (
+          <KanbanTracker
+            savedJobs={savedJobs}
+            setSavedJobs={setSavedJobs}
+            setSelectedJob={setSelectedJob}
+            toggleSaveJob={toggleSaveJob}
+          />
+        ) : (
           <>
             {/* Hero & Search Header */}
             <SearchBar
@@ -252,7 +269,7 @@ function App() {
               )}
             </div>
           </>
-        
+        )}
       </main>
 
       {/* Footer */}
@@ -275,9 +292,22 @@ function App() {
         onOpenInterview={(j) => setInterviewJob(j)}
       />
 
-      
+      {pitchJob && (
+        <CoverLetterModal
+          job={pitchJob}
+          profile={profile}
+          match={calculateJobMatch(pitchJob.description, profile.skills)}
+          onClose={() => setPitchJob(null)}
+        />
+      )}
 
-      
+      {interviewJob && (
+        <MockInterviewModal
+          job={interviewJob}
+          match={calculateJobMatch(interviewJob.description, profile.skills)}
+          onClose={() => setInterviewJob(null)}
+        />
+      )}
     </div>
   );
 }

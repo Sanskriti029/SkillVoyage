@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-// import ResumeUploadModal from "./ResumeUploadModal";
+import ResumeUploadModal from "./ResumeUploadModal";
 
 function ProfileForm({ profile, updateProfile, setProfile }) {
-  // const [showResumeModal, setShowResumeModal] = useState(false);
+  const [showResumeModal, setShowResumeModal] = useState(false);
 
   const recommendedSkills = [
     "JavaScript",
@@ -71,13 +71,13 @@ function ProfileForm({ profile, updateProfile, setProfile }) {
         </div>
 
         <div className="profile-header-actions">
-          {/* <button
+          <button
             type="button"
             className="btn-primary"
             onClick={() => setShowResumeModal(true)}
           >
             ⚡ AI Resume Import
-          </button> */}
+          </button>
 
           <div className="completion-widget">
             <div className="completion-info">
@@ -194,13 +194,14 @@ function ProfileForm({ profile, updateProfile, setProfile }) {
         </div>
       </div>
 
-      {/* {showResumeModal && (
+      {showResumeModal && (
         <ResumeUploadModal
           profile={profile}
           setProfile={setProfile}
+          updateProfile={updateProfile}
           onClose={() => setShowResumeModal(false)}
         />
-      )} */}
+      )}
     </section>
   );
 }
