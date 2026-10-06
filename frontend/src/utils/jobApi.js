@@ -1,6 +1,6 @@
 const API_BASE_URL = "http://127.0.0.1:5000";
 
-export async function fetchJobs(query, location, pageToken = "") {
+export async function fetchJobs(query, location, pageToken = "", profile = null) {
   const params = new URLSearchParams();
 
   params.append("q", query);
@@ -11,6 +11,15 @@ export async function fetchJobs(query, location, pageToken = "") {
 
   if (pageToken) {
     params.append("next_page_token", pageToken);
+  }
+
+  // Pass profile data to backend for smart search strategy
+  if (profile) {
+    const profileData = {
+      preferredRole: profile.preferredRole || "",
+      skillsList: profile.skills ? profile.skills.split(",").map(s => s.trim()) : [],
+    };
+    params.append("profile", JSON.stringify(profileData));
   }
 
   const response = await fetch(

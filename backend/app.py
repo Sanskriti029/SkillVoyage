@@ -57,6 +57,50 @@ COMMON_SKILLS_PY = [
     "problem solving", "teamwork"
 ]
 
+def generate_search_variations(profile):
+    """
+    Generate multiple search queries based on user profile.
+    Returns a list of (query, weight) tuples where weight indicates importance.
+    """
+    queries = []
+    
+    # Primary query: Preferred role (highest priority)
+    if profile.get("preferredRole"):
+        role = profile["preferredRole"].lower()
+        queries.append((f"{role} internship", 1.0))
+        
+        # Add variations of the role
+        role_parts = role.split()
+        if len(role_parts) > 1:
+            queries.append((f"{role_parts[0]} internship", 0.9))
+    
+    # Alternative role searches based on skills
+    skills = profile.get("skillsList", [])
+    if skills:
+        # Top skill variations
+        top_skill = skills[0].lower()
+        queries.append((f"{top_skill} developer internship", 0.85))
+        queries.append((f"{top_skill} intern", 0.80))
+        
+        # Multiple skill combinations
+        if len(skills) >= 2:
+            combined = f"{skills[0]} {skills[1]} intern".lower()
+            queries.append((combined, 0.75))
+    
+    # Broad fallbacks
+    queries.append(("internship", 0.7))
+    queries.append(("graduate trainee", 0.65))
+    
+    # Return deduplicated queries while preserving order and max weight
+    seen = {}
+    result = []
+    for query, weight in queries:
+        if query not in seen or weight > seen[query]:
+            seen[query] = weight
+            result.append((query, weight))
+    
+    return result
+
 def extract_text_from_file(file_storage):
     filename = file_storage.filename.lower()
     if filename.endswith(".pdf"):
@@ -245,51 +289,91 @@ def get_jobs():
         "location",
         "India"
     )
+    
+    profile_data = request.args.get("profile", "{}")
+    
+    # Try to parse profile for smart search variations
+    try:
+        import json
+        profile = json.loads(profile_data)
+    except:
+        profile = {}
 
     try:
+        # Collect all jobs from multiple search variations
+        all_jobs = []
+        all_job_ids = set()
+        
+        # If profile provided, use smart search strategy
+        if profile:
+            search_queries = generate_search_variations(profile)
+        else:
+            search_queries = [(query, 1.0)]
+        
+        # Execute searches for each query variation
+        for search_query, weight in search_queries[:4]:  # Limit to 4 to avoid too many API calls
+            try:
+                search_params = {
+                    "engine": "google_jobs",
+                    "q": search_query,
+                    "location": location,
+                    "gl": "in",
+                    "hl": "en"
+                }
 
-        search_params = {
-            "engine": "google_jobs",
-            "q": query,
-            "location": location,
-            "gl": "in",
-            "hl": "en"
-        }
+                # Request the next page only when a token is supplied
+                next_page_token = request.args.get("next_page_token")
 
-        # Request the next page only when a token is supplied
-        next_page_token = request.args.get("next_page_token")
+                if next_page_token and search_query == query:  # Only use pagination for main query
+                    search_params["next_page_token"] = next_page_token
 
-        if next_page_token:
-            search_params["next_page_token"] = next_page_token
-
-        results = client.search(search_params)
-
-        jobs = results.get("jobs_results", [])
-
-        cleaned_jobs = []
-
-        for job in jobs:
-
-            cleaned_jobs.append({
-                "title": job.get("title"),
-                "company": job.get("company_name"),
-                "is_internship": is_internship(job.get("title")),
-                "location": job.get("location"),
-                "description": job.get("description"),
-                "job_id": job.get("job_id"),
-                "via": job.get("via"),
-                "extensions": job.get("extensions", []),
-                "apply_options": job.get("apply_options", []),
-                "source_link": job.get("source_link")
-            })
+                results = client.search(search_params)
+                
+                jobs = results.get("jobs_results", [])
+                
+                for job in jobs:
+                    job_id = job.get("job_id")
+                    if job_id and job_id not in all_job_ids:
+                        all_job_ids.add(job_id)
+                        all_jobs.append({
+                            "title": job.get("title"),
+                            "company": job.get("company_name"),
+                            "is_internship": is_internship(job.get("title")),
+                            "location": job.get("location"),
+                            "description": job.get("description"),
+                            "job_id": job.get("job_id"),
+                            "via": job.get("via"),
+                            "extensions": job.get("extensions", []),
+                            "apply_options": job.get("apply_options", []),
+                            "source_link": job.get("source_link"),
+                            "search_weight": weight
+                        })
+            except Exception as e:
+                # Continue with other search queries if one fails
+                continue
+        
+        # Get pagination token only from main query
+        pagination_token = ""
+        if not profile:
+            try:
+                search_params = {
+                    "engine": "google_jobs",
+                    "q": query,
+                    "location": location,
+                    "gl": "in",
+                    "hl": "en"
+                }
+                results = client.search(search_params)
+                pagination_token = results.get("serpapi_pagination", {}).get("next_page_token", "")
+            except:
+                pass
 
         return jsonify({
             "success": True,
-            "count": len(cleaned_jobs),
-            "jobs": cleaned_jobs,
-            "next_page_token": results.get(
-                "serpapi_pagination", {}
-            ).get("next_page_token")
+            "count": len(all_jobs),
+            "jobs": all_jobs,
+            "next_page_token": pagination_token,
+            "search_strategy": "smart" if profile else "simple"
         })
 
     except Exception as e:
