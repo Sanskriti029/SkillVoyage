@@ -2,7 +2,7 @@
 __pycache__/
 *.pyc
 
-.txt
+*.txt
 Code_SNIPPETS.MD
 COMMIT_GUIDE.md
 FEATURES_IMPLEMENTED.md
