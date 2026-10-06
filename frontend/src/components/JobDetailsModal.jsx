@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import skillRoadmaps from "../data/skillRoadmaps";
+import { calculateOpportunityScore } from "../utils/jobmatching";
 
 function JobDetailsModal({
   selectedJob,
@@ -17,6 +18,14 @@ function JobDetailsModal({
     selectedJob.description || "",
     profile.skills
   );
+  const oppScore = calculateOpportunityScore(selectedJob, profile);
+
+  const getScoreTier = (score) => {
+    if (score >= 80) return "score-excellent";
+    if (score >= 60) return "score-good";
+    if (score >= 40) return "score-fair";
+    return "score-poor";
+  };
 
   return (
     <div
@@ -110,6 +119,7 @@ function JobDetailsModal({
 
           {modalTab === "overview" && (
             <div className="modal-tab-content">
+<<<<<<< HEAD
 
               <div className="modal-match-card">
                 <div className="modal-match-circle">
@@ -136,6 +146,44 @@ function JobDetailsModal({
                     </>
                   )}
 
+=======
+              <div className="modal-opportunity-score-card">
+                <div className={`modal-score-circle ${getScoreTier(oppScore.totalScore)}`}>
+                  <span className="circle-pct">{oppScore.totalScore}%</span>
+                  <span className="circle-lbl">Opportunity<br/>Score</span>
+                </div>
+                <div className="modal-score-detail">
+                  <h4>Complete Candidate-Opportunity Fit</h4>
+                  <p>
+                    This composite score evaluates your overall suitability for this role,
+                    combining skill match, role alignment, location preference, and internship fit.
+                  </p>
+                </div>
+              </div>
+
+              <div className="modal-score-breakdown">
+                <h4>Score Breakdown</h4>
+                <div className="breakdown-grid">
+                  {Object.entries(oppScore.breakdown).map(([key, val]) => (
+                    <div key={key} className="breakdown-cell">
+                      <span className="breakdown-name">{key}</span>
+                      <div className="breakdown-bar-container">
+                        <div
+                          className="breakdown-bar"
+                          style={{ width: `${val.score}%` }}
+                        ></div>
+                      </div>
+                      <span className="breakdown-pct">{val.score}%</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="modal-match-card">
+                <div className="modal-match-circle">
+                  <span className="circle-pct">{match.matchPercentage}%</span>
+                  <span className="circle-lbl">Skill<br/>Match</span>
+>>>>>>> 4728459e34712b4fbc745a178e8cfb9c2bfaaaa7
                 </div>
 
                 <div className="modal-match-detail">

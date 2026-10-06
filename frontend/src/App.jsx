@@ -119,7 +119,7 @@ function App() {
     }
 
     try {
-      const data = await fetchJobs(query, location);
+      const data = await fetchJobs(query, location, "", profile);
       setJobs(data.jobs || []);
       setNextPageToken(data.next_page_token || "");
     } catch (error) {
@@ -137,7 +137,7 @@ function App() {
     setLoadingMore(true);
 
     try {
-      const data = await fetchJobs(query, location, nextPageToken);
+      const data = await fetchJobs(query, location, nextPageToken, profile);
       setJobs((currentJobs) => [...currentJobs, ...(data.jobs || [])]);
       setNextPageToken(data.next_page_token || "");
     } catch (error) {
