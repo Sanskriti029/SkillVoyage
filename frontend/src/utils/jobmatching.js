@@ -115,7 +115,6 @@ export function calculateJobMatch(jobDescription, studentSkills) {
     .map((skill) => skill.trim().toLowerCase())
     .filter((skill) => skill !== "");
 
-<<<<<<< HEAD
   const requiredSkills = COMMON_SKILLS.filter((skill) => {
     const escapedSkill = skill.replace(
       /[.*+?^${}()|[\]\\]/g,
@@ -137,21 +136,6 @@ export function calculateJobMatch(jobDescription, studentSkills) {
         skill.includes(studentSkill)
     )
   );
-=======
-  // Skills mentioned in the job description (using aliases)
-  const requiredSkills = COMMON_SKILLS.filter((skill) =>
-    skillMatches(description, skill)
-  );
-
-  // Skills the student has that are required by the job
-  const matchedSkills = requiredSkills.filter((skill) => {
-    const normalizedSkill = normalizeSkill(skill);
-    return skills.some((studentSkill) => {
-      const normalizedStudentSkill = normalizeSkill(studentSkill);
-      return normalizedStudentSkill === normalizedSkill;
-    });
-  });
->>>>>>> 4728459e34712b4fbc745a178e8cfb9c2bfaaaa7
 
   const missingSkills = requiredSkills.filter(
     (skill) => !matchedSkills.includes(skill)

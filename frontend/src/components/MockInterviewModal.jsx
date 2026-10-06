@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { generateMockQuestions } from "../utils/interviewQuestions";
 
 function MockInterviewModal({ job, match, onClose }) {
@@ -8,9 +8,148 @@ function MockInterviewModal({ job, match, onClose }) {
   const [showSample, setShowSample] = useState(false);
   const [feedback, setFeedback] = useState(null);
 
+  const [questions, setQuestions] = useState([]);
+  const [loadingQuestions, setLoadingQuestions] = useState(false);
+  const [questionError, setQuestionError] = useState("");
+
+  const fetchInterviewQuestions = async () => {
+    if (!job) return;
+
+    setLoadingQuestions(true);
+    setQuestionError("");
+
+    try {
+      const response = await fetch("http://127.0.0.1:5000/api/interview", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          role: job.title || "Software Engineer Intern",
+          company: job.company || "",
+          skills: match?.matchedSkills?.join(", ") || "",
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(
+          data.error || `Failed to load interview questions (${response.status})`
+        );
+      }
+
+      const liveQuestions = (data.questions || []).map((item, index) => {
+        if (typeof item === "string") {
+          return {
+            category: "Interview Question",
+            question: item,
+            hint: "Structure your answer clearly and support it with a specific example.",
+            sampleAnswer:
+              "Use a clear structure: explain your approach, give a relevant example, and mention the result.",
+          };
+        }
+
+        return {
+          category: item.category || "Interview Question",
+          question: item.question || item.title || `Question ${index + 1}`,
+          hint:
+            item.hint ||
+            "Explain your reasoning clearly and support your answer with a specific example.",
+          sampleAnswer:
+            item.sampleAnswer ||
+            "Give a structured answer with your approach, relevant experience, and outcome.",
+        };
+      });
+
+      if (liveQuestions.length === 0) {
+        throw new Error("No interview questions were returned.");
+      }
+
+      setQuestions(liveQuestions);
+      setCurrentIdx(0);
+      setUserAnswer("");
+      setShowHint(false);
+      setShowSample(false);
+      setFeedback(null);
+    } catch (error) {
+      console.error("Interview question error:", error);
+
+      setQuestionError(
+        error.message || "Unable to load interview questions."
+      );
+
+      // Keep your existing local questions as a fallback.
+      const fallbackQuestions = generateMockQuestions(job, match);
+      setQuestions(fallbackQuestions);
+      setCurrentIdx(0);
+    } finally {
+      setLoadingQuestions(false);
+    }
+  };
+
+  useEffect(() => {
+    if (job) {
+      fetchInterviewQuestions();
+    }
+  }, [job]);
+
   if (!job) return null;
 
-  const questions = generateMockQuestions(job, match);
+  if (loadingQuestions) {
+    return (
+      <div className="modal-overlay" onClick={onClose}>
+        <div
+          className="modal-container interview-modal"
+          onClick={(e) => e.stopPropagation()}
+        >
+          <button className="modal-close-btn" onClick={onClose}>
+            ✕
+          </button>
+
+          <div className="modal-body interview-loading">
+            <div className="loading-spinner">🎙️</div>
+            <h2>Preparing Your Interview</h2>
+            <p>
+              Searching for role-specific interview questions using
+              SerpApi...
+            </p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (questions.length === 0) {
+    return (
+      <div className="modal-overlay" onClick={onClose}>
+        <div
+          className="modal-container interview-modal"
+          onClick={(e) => e.stopPropagation()}
+        >
+          <button className="modal-close-btn" onClick={onClose}>
+            ✕
+          </button>
+
+          <div className="modal-body interview-error">
+            <h2>⚠️ Unable to Prepare Interview</h2>
+            <p>
+              {questionError ||
+                "No interview questions are available right now."}
+            </p>
+
+            <button
+              className="btn-primary"
+              onClick={fetchInterviewQuestions}
+            >
+              🔄 Try Again
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   const currentQ = questions[currentIdx];
 
   const handleEvaluate = () => {
@@ -58,12 +197,19 @@ function MockInterviewModal({ job, match, onClose }) {
         <button className="modal-close-btn" onClick={onClose}>✕</button>
 
         <div className="modal-header">
+          {questionError && (
+  <div className="interview-fallback-notice">
+    ⚠️ Live questions could not be loaded. Showing InternScout's
+    built-in interview questions instead.
+  </div>
+)}
           <div className="modal-badge-row">
             <span className="modal-type-badge">🎙️ AI Job-Specific Mock Interview</span>
             <span className="modal-via-badge">Question {currentIdx + 1} of {questions.length}</span>
           </div>
           <h2 className="modal-job-title">Practice for {job.title} at {job.company}</h2>
-        </div>
+       
+         </div>
 
         <div className="modal-body">
           {/* Question Box */}
@@ -147,6 +293,13 @@ function MockInterviewModal({ job, match, onClose }) {
           >
             Next Question →
           </button>
+          <button
+  className="btn-secondary"
+  onClick={fetchInterviewQuestions}
+  disabled={loadingQuestions}
+>
+  🔄 Regenerate
+</button>
         </div>
       </div>
     </div>

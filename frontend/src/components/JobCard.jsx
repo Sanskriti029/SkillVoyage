@@ -14,17 +14,11 @@ function JobCard({
 }) {
   const [showRoadmap, setShowRoadmap] = useState(false);
 
-<<<<<<< HEAD
   const match = calculateJobMatch(job.description || "", profile.skills);
 
   const isSaved = savedJobs.some(
     (savedJob) => savedJob.job_id === job.job_id
   );
-=======
-  const match = calculateJobMatch(job.description, profile.skills);
-  const oppScore = calculateOpportunityScore(job, profile);
-  const isSaved = savedJobs.some((savedJob) => savedJob.job_id === job.job_id);
->>>>>>> 4728459e34712b4fbc745a178e8cfb9c2bfaaaa7
 
   const getScoreTier = (score) => {
     if (score >= 80) return "score-excellent";
@@ -114,7 +108,6 @@ function JobCard({
         )}
       </div>
 
-<<<<<<< HEAD
       {/* MATCH SECTION */}
       <div
         className={`match-banner ${
@@ -127,7 +120,7 @@ function JobCard({
           <div className="match-number">
             {match.hasEnoughSkillInformation ? (
               <>
-                <strong>{match.matchPercentage}%</strong>
+                <strong>{match.matchPercentage}% </strong>
                 <span>Skill Match</span>
               </>
             ) : (
@@ -141,14 +134,6 @@ function JobCard({
               </div>
             )}
           </div>
-=======
-      <div className={`match-banner ${getMatchTier(match.matchPercentage)}`}>
-        <div className="opportunity-score-badge">
-          <div className={`opp-score ${getScoreTier(oppScore.totalScore)}`}>
-            {oppScore.totalScore}%
-          </div>
-          <div className="score-label">Opportunity<br/>Score</div>
->>>>>>> 4728459e34712b4fbc745a178e8cfb9c2bfaaaa7
         </div>
 
         {/* SKILL PREVIEW */}
@@ -209,25 +194,7 @@ function JobCard({
         </div>
       </div>
 
-<<<<<<< HEAD
       {/* DESCRIPTION */}
-=======
-      <div className="opportunity-breakdown">
-        <div className="breakdown-item">
-          <span className="breakdown-label">Skills:</span>
-          <span className="breakdown-score">{oppScore.skillMatchScore}%</span>
-        </div>
-        <div className="breakdown-item">
-          <span className="breakdown-label">Role:</span>
-          <span className="breakdown-score">{oppScore.roleMatchScore}%</span>
-        </div>
-        <div className="breakdown-item">
-          <span className="breakdown-label">Location:</span>
-          <span className="breakdown-score">{oppScore.locationMatchScore}%</span>
-        </div>
-      </div>
-
->>>>>>> 4728459e34712b4fbc745a178e8cfb9c2bfaaaa7
       <p className="job-description-snippet">
         {job.description
           ? job.description.length > 180

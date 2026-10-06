@@ -2601,3 +2601,80 @@
   display: block;
   margin-bottom: 4px;
 }
+
+/* ================================
+   LIVE MOCK INTERVIEW
+================================ */
+
+.interview-loading,
+.interview-error {
+  text-align: center;
+  padding: 60px 30px;
+}
+
+.loading-spinner {
+  font-size: 48px;
+  margin-bottom: 15px;
+  animation: interviewPulse 1.2s infinite;
+}
+
+@keyframes interviewPulse {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 0.7;
+  }
+
+  50% {
+    transform: scale(1.15);
+    opacity: 1;
+  }
+}
+
+.interview-loading h2,
+.interview-error h2 {
+  margin-bottom: 10px;
+}
+
+.interview-loading p,
+.interview-error p {
+  opacity: 0.75;
+  line-height: 1.6;
+}
+
+.interview-fallback-notice {
+  margin: 0 24px 10px;
+  padding: 10px 14px;
+  border-radius: 8px;
+  background: rgba(245, 158, 11, 0.12);
+  border: 1px solid rgba(245, 158, 11, 0.35);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.interview-modal .question-card {
+  margin-top: 10px;
+}
+
+.interview-modal .question-category {
+  display: inline-block;
+  margin-bottom: 10px;
+}
+
+@media (max-width: 700px) {
+  .interview-modal {
+    width: 95%;
+    max-height: 90vh;
+    overflow-y: auto;
+  }
+
+  .interview-loading,
+  .interview-error {
+    padding: 40px 20px;
+  }
+
+  .interview-fallback-notice {
+    margin-left: 15px;
+    margin-right: 15px;
+  }
+}
