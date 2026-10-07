@@ -5,10 +5,13 @@ function Navbar({
   setActiveTab,
   savedJobsCount,
   profileCompletion,
+  loggedInUser,
+  onLogout,
 }) {
   return (
     <header className="navbar">
       <div className="navbar-container">
+        
         {/* Brand Logo */}
         <div className="brand" onClick={() => setActiveTab("search")}>
           <div className="brand-icon-wrapper">
@@ -61,6 +64,29 @@ function Navbar({
             )}
           </button>
         </nav>
+        <div className="navbar-user">
+  <div className="navbar-user-info">
+    <span className="navbar-user-icon">👤</span>
+
+    <div>
+      <strong>
+        {loggedInUser?.name || "Student"}
+      </strong>
+
+      <span>
+        {loggedInUser?.email || ""}
+      </span>
+    </div>
+  </div>
+
+  <button
+    className="logout-button"
+    onClick={onLogout}
+    title="Logout"
+  >
+    🚪 Logout
+  </button>
+</div>
       </div>
     </header>
   );

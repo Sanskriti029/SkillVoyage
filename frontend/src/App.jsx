@@ -11,7 +11,7 @@ import ResultsMessage from "./components/ResultsMessage";
 import JobDetailsModal from "./components/JobDetailsModal";
 import CoverLetterModal from "./components/CoverLetterModal";
 import MockInterviewModal from "./components/MockInterviewModal";
-
+import AuthPage from "./components/AuthPage";
 
 import { calculateJobMatch } from "./utils/jobmatching";
 import {
@@ -47,6 +47,15 @@ function App() {
 
   const [savedJobs, setSavedJobs] = useState(loadSavedJobs);
   const [profile, setProfile] = useState(loadProfile);
+
+
+  const [loggedInUser, setLoggedInUser] = useState(() => {
+  try {
+    return JSON.parse(localStorage.getItem("internscout_logged_in")) || null;
+  } catch {
+    return null;
+  }
+});
 
   useEffect(() => {
     saveProfile(profile);
@@ -184,15 +193,28 @@ function App() {
       return updatedJobs;
     });
   };
-
+if (!loggedInUser) {
+  return (
+    <AuthPage
+      onLogin={(user) => {
+        setLoggedInUser(user);
+      }}
+    />
+  );
+}
   return (
     <div className="app-shell">
       <Navbar
-        activeTab={activeTab}
-        setActiveTab={setActiveTab}
-        savedJobsCount={savedJobs.length}
-        profileCompletion={profileCompletion}
-      />
+  activeTab={activeTab}
+  setActiveTab={setActiveTab}
+  savedJobsCount={savedJobs.length}
+  profileCompletion={profileCompletion}
+  loggedInUser={loggedInUser}
+  onLogout={() => {
+    localStorage.removeItem("internscout_logged_in");
+    setLoggedInUser(null);
+  }}
+/>
 
       {/* Main Content Body */}
       <main className="main-content">
