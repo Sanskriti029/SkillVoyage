@@ -23,9 +23,10 @@ function SearchBar({
   ];
 
   const handleQuickSearch = (role) => {
-    setQuery(`${role} intern`);
-    searchJobs();
-  };
+  const newQuery = `${role} intern`;
+  setQuery(newQuery);
+  searchJobs(newQuery);
+};
 
   return (
     <section className="hero-search-section">
@@ -62,7 +63,7 @@ function SearchBar({
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder="e.g. Software Engineer, React Developer..."
-              onKeyDown={(e) => e.key === "Enter" && searchJobs()}
+              onKeyDown={(e) => e.key === "Enter" && searchJobs(query)}
             />
           </div>
 
@@ -99,8 +100,9 @@ function SearchBar({
 
           <button
             className="search-btn"
-            onClick={searchJobs}
+            // onClick={searchJobs}
             disabled={loading}
+            onClick={() => searchJobs(query)}
           >
             {loading ? (
               <span className="loading-spinner-wrapper">

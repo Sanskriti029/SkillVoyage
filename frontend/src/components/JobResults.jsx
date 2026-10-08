@@ -28,7 +28,8 @@ function JobResults({
   }
 
   return (
-    <>
+    <div className="job-results-section">
+    
       <ResultsHeader
         showSavedJobs={showSavedJobs}
         filteredJobs={filteredJobs}
@@ -71,7 +72,8 @@ function JobResults({
           </button>
         </div>
       )}
-    </>
+      </div>
+    
   );
 }
 

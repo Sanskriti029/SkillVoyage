@@ -118,27 +118,36 @@ function App() {
     .filter((company) => !companySuggestions.includes(company))
     .slice(0, 5);
 
-  async function searchJobs() {
-    if (!query.trim()) return;
+  async function searchJobs(queryOverride = query) {
+  const searchQuery = queryOverride.trim();
 
-    setLoading(true);
-    setSearched(true);
-    if (activeTab !== "saved") {
-      setActiveTab("search");
-    }
+  if (!searchQuery) return;
 
-    try {
-      const data = await fetchJobs(query, location, "", profile);
-      setJobs(data.jobs || []);
-      setNextPageToken(data.next_page_token || "");
-    } catch (error) {
-      console.error("Error fetching jobs:", error);
-      setJobs([]);
-      setNextPageToken("");
-    } finally {
-      setLoading(false);
-    }
+  setLoading(true);
+  setSearched(true);
+
+  if (activeTab !== "saved") {
+    setActiveTab("search");
   }
+
+  try {
+    const data = await fetchJobs(
+      searchQuery,
+      location,
+      "",
+      profile
+    );
+
+    setJobs(data.jobs || []);
+    setNextPageToken(data.next_page_token || "");
+  } catch (error) {
+    console.error("Error fetching jobs:", error);
+    setJobs([]);
+    setNextPageToken("");
+  } finally {
+    setLoading(false);
+  }
+}
 
   async function loadMoreJobs() {
     if (!nextPageToken || loadingMore) return;
