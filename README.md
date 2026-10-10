@@ -118,6 +118,8 @@ The project is organized into a frontend and a Flask backend. The frontend inclu
 |     |     |     ├── AuthPage.jsx
 |     |     |     ├── CoverLetterModal.jsx
 |     |     |     ├── Dashboard.jsx
+|     |     |     ├── HomePage.css
+|     |     |     ├── HomePage.jsx
 |     |     |     ├── JobCard.jsx
 |     |     |     ├── JobDetailsModal.jsx
 |     |     |     ├── JobFilters.jsx
