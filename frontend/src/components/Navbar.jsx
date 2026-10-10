@@ -20,8 +20,8 @@ function Navbar({
         {/* Brand */}
         <button
           className="brand"
-          onClick={() => setActiveTab("search")}
-          aria-label="Go to SkillVoyage search"
+          onClick={() => setActiveTab("home")}
+          aria-label="Go to SkillVoyage home"
         >
           <div className="brand-icon-wrapper">
             <span className="brand-icon">🎯</span>
@@ -39,7 +39,13 @@ function Navbar({
 
         {/* Main Navigation */}
         <nav className="nav-links" aria-label="Main navigation">
-
+          <button
+  className={`nav-tab ${activeTab === "home" ? "active" : ""}`}
+  onClick={() => setActiveTab("home")}
+>
+  <span className="tab-icon">🏠</span>
+  <span>Home</span>
+</button>
           <button
             className={`nav-tab ${
               activeTab === "search" ? "active" : ""

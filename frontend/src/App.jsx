@@ -12,6 +12,7 @@ import JobDetailsModal from "./components/JobDetailsModal";
 import CoverLetterModal from "./components/CoverLetterModal";
 import MockInterviewModal from "./components/MockInterviewModal";
 import AuthPage from "./components/AuthPage";
+import HomePage from "./components/HomePage";
 
 import {
   calculateJobMatch,
@@ -34,7 +35,7 @@ function App() {
   const [internshipsOnly, setInternshipsOnly] = useState(true);
 
   // Navigation tab state: 'search' | 'saved' | 'dashboard' | 'profile'
-  const [activeTab, setActiveTab] = useState("search");
+const [activeTab, setActiveTab] = useState("home");
 
   const [nextPageToken, setNextPageToken] = useState(null);
   const [loadingMore, setLoadingMore] = useState(false);
@@ -208,10 +209,11 @@ function App() {
 if (!loggedInUser) {
   return (
     <AuthPage
-      onLogin={(user) => {
-        setLoggedInUser(user);
-      }}
-    />
+  onLogin={(user) => {
+    setLoggedInUser(user);
+    setActiveTab("home");
+  }}
+/>
   );
 }
   return (
@@ -230,7 +232,15 @@ if (!loggedInUser) {
 
       {/* Main Content Body */}
       <main className="main-content">
-        {activeTab === "profile" ? (
+  {activeTab === "home" ? (
+    <HomePage
+      loggedInUser={loggedInUser}
+      profile={profile}
+      savedJobs={savedJobs}
+      profileCompletion={profileCompletion}
+      setActiveTab={setActiveTab}
+    />
+  ) : activeTab === "profile" ? (
           <ProfileForm
             profile={profile}
             updateProfile={updateProfile}
