@@ -1,12 +1,14 @@
 import React, { useState } from "react";
 import skillRoadmaps from "../data/skillRoadmaps";
-import { calculateOpportunityScore } from "../utils/jobmatching";
+import {
+  calculateJobMatch,
+  calculateOpportunityScore,
+} from "../utils/jobMatching";
 
 function JobDetailsModal({
   selectedJob,
   profile,
   setSelectedJob,
-  calculateJobMatch,
   onOpenPitch,
   onOpenInterview,
 }) {
@@ -14,11 +16,12 @@ function JobDetailsModal({
 
   if (!selectedJob) return null;
 
+  const safeProfile = profile || {};
   const match = calculateJobMatch(
     selectedJob.description || "",
-    profile.skills
+    safeProfile.skills || ""
   );
-  const oppScore = calculateOpportunityScore(selectedJob, profile);
+  const oppScore = calculateOpportunityScore(selectedJob, safeProfile);
 
   const getScoreTier = (score) => {
     if (score >= 80) return "score-excellent";
@@ -121,6 +124,12 @@ function JobDetailsModal({
             <div className="modal-tab-content">
 
               <div className="modal-match-card">
+                <div className="modal-opportunity-score">
+                  <span className="modal-opportunity-score-label">🎯 Opportunity Score</span>
+                  <strong className={`modal-opportunity-score-value ${getScoreTier(oppScore.totalScore)}`}>
+                    {oppScore.totalScore}/100
+                  </strong>
+                </div>
                 <div className="modal-match-circle">
 
                   {match.hasEnoughSkillInformation ? (

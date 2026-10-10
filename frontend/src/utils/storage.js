@@ -3,7 +3,7 @@ import { DEFAULT_PROFILE } from "../constants";
 export function loadSavedJobs() {
   try {
     return (
-      JSON.parse(localStorage.getItem("internscout_saved_jobs")) || []
+      JSON.parse(localStorage.getItem("SkillVoyage_saved_jobs")) || []
     );
   } catch {
     return [];
@@ -12,14 +12,14 @@ export function loadSavedJobs() {
 
 export function saveSavedJobs(jobs) {
   localStorage.setItem(
-    "internscout_saved_jobs",
+    "SkillVoyage_saved_jobs",
     JSON.stringify(jobs)
   );
 }
 
 export function loadProfile() {
   try {
-    const savedProfile = localStorage.getItem("internscout_profile");
+    const savedProfile = localStorage.getItem("SkillVoyage_profile");
 
     return savedProfile
       ? JSON.parse(savedProfile)
@@ -31,7 +31,7 @@ export function loadProfile() {
 
 export function saveProfile(profile) {
   localStorage.setItem(
-    "internscout_profile",
+    "SkillVoyage_profile",
     JSON.stringify(profile)
   );
 }

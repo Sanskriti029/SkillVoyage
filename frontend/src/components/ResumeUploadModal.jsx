@@ -223,7 +223,7 @@ function ResumeUploadModal({ profile, setProfile, updateProfile, onClose }) {
       });
     }
 
-    localStorage.setItem("internscout_profile", JSON.stringify(updatedProfile));
+    localStorage.setItem("SkillVoyage_profile", JSON.stringify(updatedProfile));
     onClose();
   };
 

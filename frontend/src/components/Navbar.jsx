@@ -21,7 +21,7 @@ function Navbar({
         <button
           className="brand"
           onClick={() => setActiveTab("search")}
-          aria-label="Go to InternScout search"
+          aria-label="Go to SkillVoyage search"
         >
           <div className="brand-icon-wrapper">
             <span className="brand-icon">🎯</span>
@@ -29,7 +29,7 @@ function Navbar({
           </div>
 
           <div className="brand-text">
-            <span className="brand-title">InternScout</span>
+            <span className="brand-title">SkillVoyage</span>
 
             <span className="brand-badge">
               PRO MATCH
@@ -76,7 +76,7 @@ function Navbar({
             <span>Dashboard</span>
           </button>
 
-          <button
+          {/* <button
             className={`nav-tab ${
               activeTab === "profile" ? "active" : ""
             }`}
@@ -90,7 +90,7 @@ function Navbar({
                 {profileCompletion}%
               </span>
             )}
-          </button>
+          </button> */}
 
         </nav>
 
@@ -104,22 +104,23 @@ function Navbar({
 
           <div className="navbar-user">
 
-            <div className="navbar-user-info">
+           
+<button
+  type="button"
+  className="navbar-user-info navbar-profile-button"
+  onClick={() => setActiveTab("profile")}
+  aria-label={`Open profile for ${userName}`}
+  title="View profile"
+>
+  <span className="navbar-user-avatar">
+    {userInitial || "S"}
+  </span>
 
-              <span className="navbar-user-avatar">
-                {userInitial}
-              </span>
-
-              <div className="navbar-user-details">
-                <strong>{userName}</strong>
-
-                <span>
-                  {loggedInUser?.email || "Student account"}
-                </span>
-              </div>
-
-            </div>
-
+  <span className="navbar-user-details">
+    <strong>{userName}</strong>
+    <span>{loggedInUser?.email || "Student account"}</span>
+  </span>
+</button>
             <button
               className="logout-button"
               onClick={onLogout}

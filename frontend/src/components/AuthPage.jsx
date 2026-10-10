@@ -31,7 +31,7 @@ function AuthPage({ onLogin }) {
       }
 
       const existingUser = JSON.parse(
-        localStorage.getItem("internscout_user") || "null"
+        localStorage.getItem("SkillVoyage_user") || "null"
       );
 
       if (
@@ -48,7 +48,7 @@ function AuthPage({ onLogin }) {
         password,
       };
 
-      localStorage.setItem("internscout_user", JSON.stringify(user));
+      localStorage.setItem("SkillVoyage_user", JSON.stringify(user));
 
       setMessage("Account created successfully! You can now log in.");
       setMode("login");
@@ -57,7 +57,7 @@ function AuthPage({ onLogin }) {
     }
 
     const user = JSON.parse(
-      localStorage.getItem("internscout_user") || "null"
+      localStorage.getItem("SkillVoyage_user") || "null"
     );
 
     if (!user) {
@@ -74,7 +74,7 @@ function AuthPage({ onLogin }) {
     }
 
     localStorage.setItem(
-      "internscout_logged_in",
+      "SkillVoyage_logged_in",
       JSON.stringify({
         name: user.name,
         email: user.email,
@@ -92,10 +92,10 @@ function AuthPage({ onLogin }) {
       <div className="auth-card">
         <div className="auth-logo">🎯</div>
 
-        <h1>InternScout</h1>
+        <h1>SkillVoyage</h1>
 
         <p className="auth-subtitle">
-          Search live opportunities. Understand your fit. Close your skill gaps.
+          A good fit for your personalized learning roadmaps and interview preparation.
         </p>
 
         <div className="auth-tabs">
@@ -160,7 +160,7 @@ function AuthPage({ onLogin }) {
           {message && <div className="auth-success">✅ {message}</div>}
 
           <button className="auth-submit" type="submit">
-            {mode === "login" ? "Login to InternScout" : "Create Account"}
+            {mode === "login" ? "Login to SkillVoyage" : "Create Account"}
           </button>
         </form>
 

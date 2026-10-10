@@ -20,7 +20,7 @@ I am writing to express my strong interest in the ${title} position at ${company
 Key Highlights of My Profile:
 - Proficiency in core technologies: ${skillsText}.
 - Strong academic foundation in problem-solving and software development.
-- Verified candidate skill alignment score of ${match.matchPercentage}% for this specific position on InternScout.
+- Verified candidate skill alignment score of ${match.matchPercentage}% for this specific position on SkillVoyage.
 
 I would love the opportunity to discuss how my technical skills and enthusiasm make me a strong fit for ${company}.
 

@@ -13,7 +13,10 @@ import CoverLetterModal from "./components/CoverLetterModal";
 import MockInterviewModal from "./components/MockInterviewModal";
 import AuthPage from "./components/AuthPage";
 
-import { calculateJobMatch } from "./utils/jobmatching";
+import {
+  calculateJobMatch,
+  calculateOpportunityScore,
+} from "./utils/jobMatching";
 import {
   loadSavedJobs,
   saveSavedJobs,
@@ -51,7 +54,7 @@ function App() {
 
   const [loggedInUser, setLoggedInUser] = useState(() => {
   try {
-    return JSON.parse(localStorage.getItem("internscout_logged_in")) || null;
+    return JSON.parse(localStorage.getItem("SkillVoyage_logged_in")) || null;
   } catch {
     return null;
   }
@@ -220,7 +223,7 @@ if (!loggedInUser) {
   profileCompletion={profileCompletion}
   loggedInUser={loggedInUser}
   onLogout={() => {
-    localStorage.removeItem("internscout_logged_in");
+    localStorage.removeItem("SkillVoyage_logged_in");
     setLoggedInUser(null);
   }}
 />
@@ -306,7 +309,7 @@ if (!loggedInUser) {
       {/* Footer */}
       <footer className="footer">
         <div className="footer-content">
-          <p>🎯 <strong>InternScout</strong> — AI-Powered Internship Search & Candidate Skill Matching</p>
+          <p>🎯 <strong>SkillVoyage</strong> — AI-Powered Internship Search & Candidate Skill Matching</p>
           <p className="footer-sub">
             Built with React, Flask & SerpApi. Features AI Resume Parsing, Application Pitch Generators, and Job Mock Interviews.
           </p>

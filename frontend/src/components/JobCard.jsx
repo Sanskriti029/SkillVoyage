@@ -1,6 +1,9 @@
 import React, { useState } from "react";
 import skillRoadmaps from "../data/skillRoadmaps";
-import { calculateOpportunityScore } from "../utils/jobmatching";
+import {
+  calculateJobMatch,
+  calculateOpportunityScore,
+} from "../utils/jobMatching";
 
 function JobCard({
   job,
@@ -8,13 +11,14 @@ function JobCard({
   savedJobs,
   toggleSaveJob,
   setSelectedJob,
-  calculateJobMatch,
   onOpenPitch,
   onOpenInterview,
 }) {
   const [showRoadmap, setShowRoadmap] = useState(false);
 
-  const match = calculateJobMatch(job.description || "", profile.skills);
+  const safeProfile = profile || {};
+  const match = calculateJobMatch(job.description || "", safeProfile.skills || "");
+  const opportunity = calculateOpportunityScore(job, safeProfile);
 
   const isSaved = savedJobs.some(
     (savedJob) => savedJob.job_id === job.job_id
@@ -106,6 +110,12 @@ function JobCard({
             via {job.via}
           </span>
         )}
+      </div>
+
+      {/* OPPORTUNITY SCORE */}
+      <div className={`opportunity-score-row ${getScoreTier(opportunity.totalScore)}`}>
+        <span className="opportunity-score-label">🎯 Opportunity Score</span>
+        <strong className="opportunity-score-value">{opportunity.totalScore}/100</strong>
       </div>
 
       {/* MATCH SECTION */}

@@ -16,7 +16,7 @@ function KanbanTracker({ savedJobs, setSavedJobs, setSelectedJob, toggleSaveJob 
       return j;
     });
     setSavedJobs(updated);
-    localStorage.setItem("internscout_saved_jobs", JSON.stringify(updated));
+    localStorage.setItem("SkillVoyage_saved_jobs", JSON.stringify(updated));
   };
 
   return (

@@ -199,7 +199,7 @@ function MockInterviewModal({ job, match, onClose }) {
         <div className="modal-header">
           {questionError && (
   <div className="interview-fallback-notice">
-    ⚠️ Live questions could not be loaded. Showing InternScout's
+    ⚠️ Live questions could not be loaded. Showing SkillVoyage's
     built-in interview questions instead.
   </div>
 )}
